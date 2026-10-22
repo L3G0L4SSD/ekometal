@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: ekometal
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn ekometal_project.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8

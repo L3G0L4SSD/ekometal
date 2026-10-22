@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{% if category %}{{ category.name }}{% else %}Tüm Ürünler{% endif %} | EKOMETAL{% endblock %}
+{% block meta_description %}EKOMETAL endüstriyel mutfak ekipmanları{% if category %}: {{ category.name }}{% endif %}. Model koduna göre arayın, WhatsApp'tan hızlı teklif alın.{% endblock %}
+
+{% block content %}
+<section class="bg-gradient-to-br from-cream-50 to-cream-200 border-b border-cream-300">
+  <div class="container-x py-14 sm:py-20">
+    <nav aria-label="Sayfa yolu" class="text-xs uppercase tracking-widest text-graphite-500">
+      <a href="{% url 'core:home' %}" class="hover:text-sand-600">Ana Sayfa</a> /
+      <a href="{% url 'core:product_list' %}" class="hover:text-sand-600">Ürünler</a>
+      {% if category %}/ <span class="text-graphite-900">{{ category.name }}</span>{% endif %}
+    </nav>
+    <h1 class="mt-5 text-4xl sm:text-5xl">{% if category %}{{ category.name }}{% else %}Tüm Ürünler{% endif %}</h1>
+
+    <!-- Model kodu arama -->
+    <form method="get" role="search" id="product-search-form" class="mt-10 flex max-w-2xl flex-col gap-3 sm:flex-row">
+      <label for="product-search" class="sr-only">Model kodu veya ürün adı ara</label>
+      <div class="relative flex-1">
+        <svg class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-graphite-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M20 20l-3.5-3.5"/></svg>
+        <input id="product-search" type="search" name="q" value="{{ query }}" placeholder="Model kodu ile ara (örn. EK-100)" autocomplete="off"
+               class="w-full border border-cream-300 bg-cream-50 py-3.5 pl-12 pr-4 focus:border-sand-600 focus:outline-none focus:ring-1 focus:ring-sand-600">
+      </div>
+      <button type="submit" id="product-search-btn" class="btn-primary">Ara</button>
+      {% if query %}<a href="?" class="btn-outline">Temizle</a>{% endif %}
+    </form>
+  </div>
+</section>
+
+<section class="container-x py-12">
+  <!-- Kategori filtreleri -->
+  <div class="flex flex-wrap gap-2" role="navigation" aria-label="Kategori filtresi">
+    <a href="{% url 'core:product_list' %}{% if query %}?q={{ query|urlencode }}{% endif %}"
+       class="border px-4 py-2 text-xs uppercase tracking-widest transition {% if not category %}border-graphite-900 bg-graphite-900 text-cream-50{% else %}border-cream-300 hover:border-graphite-900{% endif %}">Tümü</a>
+    {% for c in categories %}
+    <a href="{% url 'core:category' c.slug %}{% if query %}?q={{ query|urlencode }}{% endif %}"
+       class="border px-4 py-2 text-xs uppercase tracking-widest transition {% if category and category.pk == c.pk %}border-graphite-900 bg-graphite-900 text-cream-50{% else %}border-cream-300 hover:border-graphite-900{% endif %}">{{ c.name }}</a>
+    {% endfor %}
+  </div>
+
+  <p class="mt-8 text-sm text-graphite-500" aria-live="polite">
+    {% if query %}“<strong class="text-graphite-900">{{ query }}</strong>” için {% endif %}{{ total }} ürün bulundu.
+  </p>
+
+  {% if page.object_list %}
+  <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {% for product in page.object_list %}
+      {% include "partials/product_card.html" %}
+    {% endfor %}
+  </div>
+
+  {% if page.has_other_pages %}
+  <nav class="mt-14 flex items-center justify-center gap-4 text-sm" aria-label="Sayfalama">
+    {% if page.has_previous %}
+      <a href="?page={{ page.previous_page_number }}{% if query %}&q={{ query|urlencode }}{% endif %}" class="btn-outline !px-4 !py-2">&larr; Önceki</a>
+    {% endif %}
+    <span class="text-graphite-500">Sayfa {{ page.number }} / {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}
+      <a href="?page={{ page.next_page_number }}{% if query %}&q={{ query|urlencode }}{% endif %}" class="btn-outline !px-4 !py-2">Sonraki &rarr;</a>
+    {% endif %}
+  </nav>
+  {% endif %}
+
+  {% else %}
+  <div class="mt-8 border border-dashed border-cream-300 p-12 text-center">
+    <p class="text-graphite-500">Aradığınız kriterlere uygun ürün bulunamadı.</p>
+    <a href="{% url 'core:contact' %}{% if query %}?urun={{ query|urlencode }}{% endif %}" class="btn-primary mt-6">Bu Ürün İçin Teklif İsteyin</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

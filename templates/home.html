@@ -1,0 +1,989 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}EKOMETAL | İstanbul Endüstriyel Mutfak İmalat ve Toptan Tedarik{% endblock %}
+{% block meta_description %}30 yıllık ustalıkla İstanbul'un endüstriyel mutfak tedarikçisi. %100 yerli imalat, imalatçı fiyatı, kesintisiz stok ve İstanbul geneli sevkiyat.{% endblock %}
+
+{% block main_class %}pt-0{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* Hero Dikey Parçalı Metal Plaka Reveal Animasyonu */
+  .hero-slice-col {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+    pointer-events: none;
+  }
+  .hero-slice-0 { clip-path: inset(0 75% 0 0); }
+  .hero-slice-1 { clip-path: inset(0 50% 0 25%); }
+  .hero-slice-2 { clip-path: inset(0 25% 0 50%); }
+  .hero-slice-3 { clip-path: inset(0 0 0 75%); }
+
+  .hero-slice-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, rgba(20,35,28,0.4) 0%, rgba(20,35,28,0.15) 50%, rgba(20,35,28,0.4) 100%);
+    box-shadow: 0 0 6px rgba(0,0,0,0.3);
+    z-index: 5;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+</style>
+<style>
+  /* ===== ÖNE ÇIKAN ÜRÜN: CLOSER LOOK ===== */
+  .cl-section { position: relative; z-index: 10; padding: clamp(56px, 8vw, 104px) 0 clamp(24px, 4vw, 48px); }
+  .cl-head { margin-bottom: clamp(24px, 4vw, 44px); }
+  .cl-eyebrow { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; font-weight: 600; color: #8a6d3b; }
+  .cl-title { margin-top: .75rem; font-family: 'Playfair Display', serif; font-weight: 600; letter-spacing: -.02em; line-height: 1.08; font-size: clamp(2rem, 5vw, 3.6rem); color: #1c2d26; }
+  .cl-title span { color: #6b7a73; font-weight: 500; }
+
+  .cl-card { --ink: #1d1d1f; --chip: #f1f1f4; --chip-h: #e6e6eb; --ripple: rgba(20,35,28,.5);
+    position: relative; display: grid; grid-template-columns: minmax(300px, 390px) 1fr; background: #fff;
+    border-radius: 36px; overflow: hidden; box-shadow: 0 40px 90px -40px rgba(20,35,28,.35), 0 0 0 1px rgba(20,35,28,.05);
+    color: var(--ink); font-family: 'Inter', system-ui, sans-serif; }
+  .cl-card[data-color="bl"] { --ripple: rgba(255,255,255,.55); }
+  .cl-card[data-color="al"] .cl-t-bl, .cl-card[data-color="bl"] .cl-t-al { display: none; }
+
+  .cl-left { position: relative; z-index: 3; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 48px 8px 48px 48px; }
+  .cl-pills { display: flex; flex-direction: column; align-items: flex-start; }
+  .cl-item { width: 100%; }
+
+  /* pill <-> panel geçişi: grid 0fr/1fr ile yükseklik animasyonu */
+  .cl-pillrow, .cl-panelrow { display: grid; transition: grid-template-rows .65s cubic-bezier(.16,1,.3,1), opacity .45s ease; }
+  .cl-pillrow > div, .cl-panelrow > div { min-height: 0; overflow: hidden; }
+  .cl-pillrow { grid-template-rows: 1fr; opacity: 1; }
+  .cl-panelrow { grid-template-rows: 0fr; opacity: 0; }
+  .cl-item.open .cl-pillrow { grid-template-rows: 0fr; opacity: 0; }
+  .cl-item.open .cl-panelrow { grid-template-rows: 1fr; opacity: 1; }
+  .cl-pillrow > div { padding: 5px 0; }
+  .cl-panelrow > div { padding: 5px 0; }
+
+  .cl-pill { display: inline-flex; align-items: center; gap: 10px; padding: 9px 18px 9px 9px; border: 0; border-radius: 999px; background: var(--chip);
+    font: 600 .875rem/1 'Inter', sans-serif; color: var(--ink); cursor: pointer; text-decoration: none; transition: background .25s ease, transform .25s ease; }
+  .cl-pill:hover { background: var(--chip-h); transform: translateX(3px); }
+  .cl-pill:focus-visible, .cl-chip:focus-visible, .cl-dot:focus-visible, .cl-close:focus-visible, .cl-navbtn:focus-visible { outline: 2px solid #1c2d26; outline-offset: 2px; }
+  .cl-plus { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #1d1d1f; transition: transform .4s cubic-bezier(.16,1,.3,1); }
+  .cl-plus svg { width: 12px; height: 12px; }
+  .cl-pill:hover .cl-plus { transform: rotate(90deg); }
+  .cl-pill--link { background: #1c2d26; color: #fff; }
+  .cl-pill--link:hover { background: #283e34; }
+  .cl-pill--link .cl-plus { border-color: rgba(255,255,255,.7); }
+  .cl-pill--link:hover .cl-plus { transform: translateX(3px); }
+
+  .cl-panel { position: relative; width: 100%; max-width: 340px; padding: 20px 52px 20px 20px; border-radius: 26px; background: var(--chip); font-size: .9rem; line-height: 1.5; color: #333336; }
+  .cl-panel strong { color: var(--ink); }
+  .cl-panel > p { margin: 0; transform: translateY(10px); opacity: 0; transition: transform .7s cubic-bezier(.16,1,.3,1) .15s, opacity .6s ease .15s; }
+  .cl-item.open .cl-panel > p { transform: none; opacity: 1; }
+  .cl-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border: 0; border-radius: 50%; background: rgba(0,0,0,.07); cursor: pointer; display: grid; place-items: center; color: var(--ink); }
+  .cl-close:hover { background: rgba(0,0,0,.14); }
+  .cl-close svg.x { width: 11px; height: 11px; }
+  .cl-close svg.ring { position: absolute; inset: -3px; width: 34px; height: 34px; transform: rotate(-90deg); pointer-events: none; }
+  .cl-ring { fill: none; stroke: #1d1d1f; stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .cl-card.no-auto .cl-ring { display: none; }
+
+  .cl-nav { display: flex; gap: 8px; padding-top: 6px; }
+  .cl-navbtn { width: 32px; height: 32px; border: 0; border-radius: 50%; background: var(--chip); color: var(--ink); cursor: pointer; display: grid; place-items: center; transition: background .25s ease; }
+  .cl-navbtn:hover { background: var(--chip-h); }
+  .cl-navbtn svg { width: 14px; height: 14px; }
+
+  /* ===== SAHNE ===== */
+  .cl-stage { position: relative; min-height: 560px; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #fafafc; }
+  .cl-topbar { position: absolute; z-index: 6; top: 22px; left: 28px; right: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; pointer-events: none; }
+  .cl-topbar > * { pointer-events: auto; }
+  .cl-prodname { margin: 0; font-size: .85rem; font-weight: 600; letter-spacing: .01em; color: var(--ink); }
+  .cl-colors { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 999px; background: var(--chip); }
+  .cl-dot { width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; position: relative; transition: transform .3s cubic-bezier(.16,1,.3,1); }
+  .cl-dot:hover { transform: scale(1.12); }
+  .cl-dot::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1.5px solid #1d1d1f; opacity: 0; transform: scale(.8); transition: opacity .3s ease, transform .4s cubic-bezier(.16,1,.3,1); }
+  .cl-dot.is-on::after { opacity: 1; transform: none; }
+  .cl-dot-al { background: linear-gradient(135deg, #f7f7f8, #b6bac1); box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+  .cl-dot-bl { background: linear-gradient(135deg, #46464a, #0d0d0f); }
+
+  .cl-sq { position: relative; width: min(85%, 520px); aspect-ratio: 1 / 1; overflow: hidden; border-radius: 28px; }
+  .cl-cam, .cl-float { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform; }
+  .cl-layer { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; will-change: transform, opacity; user-select: none; -webkit-user-drag: none; }
+  .cl-layer[data-layer^="main"] { object-fit: contain; }
+  .cl-layer.cl-det { object-fit: cover; }
+  .cl-layer[data-layer="main-al"] { opacity: 1; }
+  .cl-dim { position: absolute; left: 7.5%; right: 7.5%; bottom: 5%; height: 14px; opacity: 0; transform: scaleX(0); pointer-events: none; }
+  .cl-dim::before, .cl-dim::after { content: ''; position: absolute; top: 0; width: 1.5px; height: 100%; background: #1d1d1f; }
+  .cl-dim::before { left: 0; } .cl-dim::after { right: 0; }
+  .cl-dim i { position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: #1d1d1f; }
+  .cl-ripple { position: absolute; left: 50%; top: 50%; width: 26%; aspect-ratio: 1; margin: -13% 0 0 -13%; border-radius: 50%; border: 1.5px solid var(--ripple); opacity: 0; pointer-events: none; }
+  .cl-sheen { position: absolute; top: -10%; left: 0; height: 120%; width: 42%; opacity: 0; pointer-events: none; background: linear-gradient(90deg, transparent, rgba(255,255,255,.9), transparent); mix-blend-mode: overlay; }
+
+  .cl-sizes { position: absolute; z-index: 5; left: 0; right: 0; bottom: 22px; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0; pointer-events: none; }
+  .cl-sizes.on { pointer-events: auto; }
+  .cl-size-label { margin: 0; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.6rem; color: #1c2d26; letter-spacing: -.01em; }
+  .cl-chips { display: flex; gap: 6px; max-width: calc(100% - 40px); overflow-x: auto; padding: 4px 4px 6px; scrollbar-width: none; }
+  .cl-chips::-webkit-scrollbar { display: none; }
+  .cl-chip { flex: 0 0 auto; min-width: 42px; padding: 8px 10px; border: 0; border-radius: 999px; background: var(--chip); font: 600 .8rem/1 'Inter', sans-serif; color: var(--ink); cursor: pointer; transition: background .25s ease, color .25s ease, transform .25s ease; }
+  .cl-chip:hover { background: var(--chip-h); }
+  .cl-chip.is-on { background: #1c2d26; color: #fff; transform: scale(1.06); }
+
+  @media (max-width: 900px) {
+    .cl-card { grid-template-columns: 1fr; border-radius: 28px; }
+    .cl-stage { order: -1; min-height: 380px; padding: 24px 0 10px; }
+    .cl-sq { width: min(88%, 340px); }
+    .cl-left { padding: 20px 18px 28px; }
+    .cl-topbar { top: 14px; left: 16px; right: 16px; }
+    .cl-prodname { font-size: .75rem; max-width: 55%; }
+    .cl-panel { max-width: 100%; }
+    .cl-size-label { font-size: 1.25rem; }
+    .cl-sizes { bottom: 12px; }
+    .cl-sq { border-radius: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cl-pillrow, .cl-panelrow, .cl-panel > p { transition: none; } }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section id="hero" class="relative isolate overflow-hidden min-h-screen flex items-start">
+  <!-- Arka Plan Görseli & Dikey Metal Plaka (Vertical Slices) Katmanı -->
+  <div id="hero-slices-wrapper" class="absolute inset-0 -z-20 overflow-hidden pointer-events-none select-none bg-[#14231c]">
+    <!-- Ana Arka Plan Görseli (Kalıcı ve Orijinal Görsel) -->
+    <img id="hero-base-img" src="{% static 'images/yeni_hero.jpg' %}" alt="EKOMETAL Endüstriyel Mutfak" aria-hidden="true" fetchpriority="high"
+         class="absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-500"
+         style="opacity: 0;">
+
+    <!-- 4 Dikey Metal Levha (Animasyon Plakaları) -->
+    <div class="hero-slice-group absolute inset-0 h-full w-full">
+      <!-- 1. Kolon (%0 - %25) -->
+      <div class="hero-slice-col hero-slice-0">
+        <img src="{% static 'images/yeni_hero.jpg' %}" alt="" aria-hidden="true"
+             class="h-full w-full object-cover object-center">
+      </div>
+      <!-- 2. Kolon (%25 - %50) -->
+      <div class="hero-slice-col hero-slice-1">
+        <img src="{% static 'images/yeni_hero.jpg' %}" alt="" aria-hidden="true"
+             class="h-full w-full object-cover object-center">
+      </div>
+      <!-- 3. Kolon (%50 - %75) -->
+      <div class="hero-slice-col hero-slice-2">
+        <img src="{% static 'images/yeni_hero.jpg' %}" alt="" aria-hidden="true"
+             class="h-full w-full object-cover object-center">
+      </div>
+      <!-- 4. Kolon (%75 - %100) -->
+      <div class="hero-slice-col hero-slice-3">
+        <img src="{% static 'images/yeni_hero.jpg' %}" alt="" aria-hidden="true"
+             class="h-full w-full object-cover object-center">
+      </div>
+
+      <!-- Plakalar Arası İnce Dikey Metal Ayrım Çizgileri -->
+      <div class="hero-slice-divider" style="left: 25%;"></div>
+      <div class="hero-slice-divider" style="left: 50%;"></div>
+      <div class="hero-slice-divider" style="left: 75%;"></div>
+    </div>
+  </div>
+
+  <div id="hero-container-box" class="container-x relative pt-24 pb-16 sm:pt-28 sm:pb-20 lg:pt-32 lg:pb-24 w-full flex justify-start">
+    <!-- Navbar sol kenar hizasına ayarlanmış metin ve buton grubu -->
+    <div id="hero-content-group" class="w-full sm:w-10/12 md:w-8/12 lg:w-5/12 xl:w-[40%] text-left md:ml-[18%] lg:ml-[22%] transition-all duration-150">
+      <!-- Üst Kurumsal Etiket (Eyebrow) -->
+      <div class="inline-flex items-center gap-2.5 mb-3 text-[11px] sm:text-xs font-semibold tracking-[0.22em] uppercase text-[#1c2d26]/80" data-reveal>
+        <span class="w-6 h-px bg-[#1c2d26]/40"></span>
+        <span>1994'ten Beri İmalatçı Güvencesi</span>
+      </div>
+
+      <!-- Ana Başlık -->
+      <h1 class="text-4xl leading-[1.1] sm:text-5xl lg:text-6xl font-serif text-[#1c2d26] tracking-tight" data-reveal>
+        30 Yıllık <span class="italic font-normal">Atölye</span> Tecrübesi
+      </h1>
+
+      <!-- Butonlar -->
+      <div class="mt-6 flex flex-row items-center gap-3" data-reveal>
+        <a href="{% url 'core:product_list' %}" id="hero-catalog-btn" 
+           class="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#1c2d26] px-5 py-2.5 text-xs font-semibold tracking-wider uppercase text-cream-50 shadow-[0_4px_14px_rgba(28,45,38,0.22)] transition-all duration-300 hover:bg-[#283e34] hover:shadow-[0_6px_18px_rgba(28,45,38,0.32)] hover:-translate-y-0.5 whitespace-nowrap">
+          <span>Ürün Kataloğu</span>
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </a>
+        <a href="https://wa.me/{{ whatsapp_number }}?text={{ 'Merhaba, EKOMETAL ürünleri için teklif almak istiyorum.'|urlencode }}"
+           target="_blank" rel="noopener" id="hero-whatsapp-btn" 
+           class="group inline-flex items-center justify-center gap-1.5 rounded-full border border-[#1c2d26]/20 bg-cream-100/90 backdrop-blur-md px-5 py-2.5 text-xs font-semibold tracking-wider uppercase text-[#1c2d26] shadow-[0_4px_14px_rgba(0,0,0,0.06)] transition-all duration-300 hover:bg-[#1c2d26] hover:text-cream-50 hover:border-[#1c2d26] hover:shadow-[0_6px_18px_rgba(28,45,38,0.25)] hover:-translate-y-0.5 whitespace-nowrap">
+          <svg class="h-4 w-4 text-[#25D366] transition-colors group-hover:text-cream-50" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5zM12 21.9c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 0 1 2.1 12C2.1 6.5 6.5 2.1 12 2.1c2.6 0 5.1 1 7 2.9a9.800 9.800 0 0 1 2.9 7c0 5.500-4.400 9.900-9.900 9.900zm5.400-7.400c-.3-.1-1.800-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.200-.3.200-.6.100a8 8 0 0 1-4-3.500c-.3-.5.3-.5.900-1.600.1-.2 0-.4 0-.5l-.9-2.200c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400s-1 1-1 2.400 1 2.800 1.200 3a11 11 0 0 0 4.700 4.100c1.700.7 2.400.8 3.200.7.5-.1 1.800-.7 2-1.400s.3-1.300.2-1.400-.3-.2-.6-.3z"/></svg>
+          <span>WhatsApp Teklif Al</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ÖNE ÇIKAN ÜRÜN: APPLE "TAKE A CLOSER LOOK" TARZI KAMERA VİTRİNİ -->
+<section id="one-cikan" class="cl-section" aria-labelledby="cl-heading">
+  <div class="container-x">
+    <div class="cl-head" data-reveal>
+      <p class="cl-eyebrow">Öne Çıkan Ürün</p>
+      <h2 id="cl-heading" class="cl-title">Delikli Pizza Tavası. <span>Yakından bakın.</span></h2>
+    </div>
+
+    <div id="cl-card" class="cl-card" data-color="al">
+      <!-- SOL: PILL'LER -->
+      <div class="cl-left">
+        <div id="cl-pills" class="cl-pills">
+
+          <div class="cl-item" data-pill="tasarim">
+            <div class="cl-pillrow"><div>
+              <button type="button" class="cl-pill" id="cl-btn-tasarim" aria-expanded="false" aria-controls="cl-panel-tasarim">
+                <span class="cl-plus" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg></span><span>Tasarım</span>
+              </button>
+            </div></div>
+            <div class="cl-panelrow"><div>
+              <div class="cl-panel" id="cl-panel-tasarim" role="region" aria-labelledby="cl-btn-tasarim">
+                <button type="button" class="cl-close" aria-label="Kapat"><svg class="ring" viewBox="0 0 34 34"><circle class="cl-ring" cx="17" cy="17" r="15" pathLength="1"/></svg><svg class="x" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button>
+                <p><strong>Tasarım.</strong> Yükseltilmiş kenarlı, tabanı baştan sona delikli yuvarlak pizza tavası. 18 cm'den 46 cm'ye kadar 14 farklı ölçüde. <span class="cl-t-al">Gösterilen: Alüminyum.</span><span class="cl-t-bl">Gösterilen: Siyah Teflon.</span></p>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="cl-item" data-pill="delik">
+            <div class="cl-pillrow"><div>
+              <button type="button" class="cl-pill" id="cl-btn-delik" aria-expanded="false" aria-controls="cl-panel-delik">
+                <span class="cl-plus" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg></span><span>Delik Yapısı</span>
+              </button>
+            </div></div>
+            <div class="cl-panelrow"><div>
+              <div class="cl-panel" id="cl-panel-delik" role="region" aria-labelledby="cl-btn-delik">
+                <button type="button" class="cl-close" aria-label="Kapat"><svg class="ring" viewBox="0 0 34 34"><circle class="cl-ring" cx="17" cy="17" r="15" pathLength="1"/></svg><svg class="x" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button>
+                <p><strong>Delik Yapısı.</strong> Tabanın tamamına yayılan hassas delik düzeni, hamurun alt yüzeyinin hava ile temas etmesine yardımcı olur.</p>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="cl-item" data-pill="malzeme">
+            <div class="cl-pillrow"><div>
+              <button type="button" class="cl-pill" id="cl-btn-malzeme" aria-expanded="false" aria-controls="cl-panel-malzeme">
+                <span class="cl-plus" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg></span><span>Malzeme</span>
+              </button>
+            </div></div>
+            <div class="cl-panelrow"><div>
+              <div class="cl-panel" id="cl-panel-malzeme" role="region" aria-labelledby="cl-btn-malzeme">
+                <button type="button" class="cl-close" aria-label="Kapat"><svg class="ring" viewBox="0 0 34 34"><circle class="cl-ring" cx="17" cy="17" r="15" pathLength="1"/></svg><svg class="x" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button>
+                <p><strong>Malzeme.</strong> <span class="cl-t-al">Alüminyum gövde: hafif ve ısıyı hızlı ileten yüzey.</span><span class="cl-t-bl">Teflon kaplı koyu yüzey: yapışmaz kullanım sağlar.</span> İki seçenek arasında renk noktalarından geçiş yapabilirsiniz.</p>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="cl-item" data-pill="olcu">
+            <div class="cl-pillrow"><div>
+              <button type="button" class="cl-pill" id="cl-btn-olcu" aria-expanded="false" aria-controls="cl-panel-olcu">
+                <span class="cl-plus" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 1v10M1 6h10"/></svg></span><span>Ölçüler</span>
+              </button>
+            </div></div>
+            <div class="cl-panelrow"><div>
+              <div class="cl-panel" id="cl-panel-olcu" role="region" aria-labelledby="cl-btn-olcu">
+                <button type="button" class="cl-close" aria-label="Kapat"><svg class="ring" viewBox="0 0 34 34"><circle class="cl-ring" cx="17" cy="17" r="15" pathLength="1"/></svg><svg class="x" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg></button>
+                <p><strong>Ölçüler.</strong> 18, 20, 22 ... 42 ve 46 cm olmak üzere 14 ölçü. Aşağıdan bir ölçü seçerek tavanın gerçek orantısını görün.</p>
+              </div>
+            </div></div>
+          </div>
+
+          <div class="cl-item">
+            <div class="cl-pillrow"><div>
+              <a id="cl-link" class="cl-pill cl-pill--link" href="{% url 'core:category' 'pizza-firin-grubu' %}">
+                <span class="cl-plus" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 6h9M7 2.5L10.5 6 7 9.5"/></svg></span><span>Kategoriye Git</span>
+              </a>
+            </div></div>
+          </div>
+
+        </div>
+        <div class="cl-nav" aria-label="Özellikler arasında gezin">
+          <button type="button" class="cl-navbtn" id="cl-prev" aria-label="Önceki özellik"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9L7 4.5 11.5 9"/></svg></button>
+          <button type="button" class="cl-navbtn" id="cl-next" aria-label="Sonraki özellik"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 5L7 9.5 11.5 5"/></svg></button>
+        </div>
+      </div>
+
+      <!-- SAĞ: SAHNE (KAMERA) -->
+      <div class="cl-stage" id="cl-stage">
+        <div class="cl-topbar">
+          <p class="cl-prodname" id="cl-prodname"><span class="cl-t-al">Alüminyum Delikli Pizza Tavası</span><span class="cl-t-bl">Teflon Delikli Siyah Pizza Tavası</span></p>
+          <div class="cl-colors" role="radiogroup" aria-label="Renk seçimi">
+            <button type="button" class="cl-dot cl-dot-al is-on" role="radio" aria-checked="true" data-color="al" aria-label="Alüminyum"></button>
+            <button type="button" class="cl-dot cl-dot-bl" role="radio" aria-checked="false" data-color="bl" aria-label="Siyah Teflon"></button>
+          </div>
+        </div>
+
+        <div class="cl-sq" id="cl-sq">
+          <div class="cl-cam" id="cl-cam">
+            <div class="cl-float" id="cl-float">
+              <img class="cl-layer" data-layer="main-al" src="{% static 'images/pizza/aluminyum-ana.webp' %}" alt="Alüminyum delikli pizza tavası" width="1024" height="1024" decoding="async">
+              <img class="cl-layer" data-layer="main-bl" src="{% static 'images/pizza/siyah-ana.webp' %}" alt="Teflon delikli siyah pizza tavası" width="1024" height="1024" decoding="async">
+            </div>
+            <div class="cl-dim" id="cl-dim" aria-hidden="true"><i></i></div>
+          </div>
+          <img class="cl-layer cl-det" data-layer="hole-al" src="{% static 'images/pizza/aluminyum-delik.webp' %}" alt="" aria-hidden="true" width="1024" height="1024" loading="lazy" decoding="async">
+          <img class="cl-layer cl-det" data-layer="hole-bl" src="{% static 'images/pizza/siyah-delik.webp' %}" alt="" aria-hidden="true" width="1024" height="1024" loading="lazy" decoding="async">
+          <img class="cl-layer cl-det" data-layer="rim-al" src="{% static 'images/pizza/aluminyum-kenar.webp' %}" alt="" aria-hidden="true" width="1024" height="1024" loading="lazy" decoding="async">
+          <img class="cl-layer cl-det" data-layer="rim-bl" src="{% static 'images/pizza/siyah-kenar.webp' %}" alt="" aria-hidden="true" width="1024" height="1024" loading="lazy" decoding="async">
+          <span class="cl-ripple"></span><span class="cl-ripple"></span><span class="cl-ripple"></span>
+          <span class="cl-sheen" id="cl-sheen"></span>
+        </div>
+
+        <div class="cl-sizes" id="cl-sizes">
+          <p class="cl-size-label" aria-live="polite">Ø <span id="cl-size-num">32</span> cm</p>
+          <div class="cl-chips" role="group" aria-label="Ölçü seçimi (cm)">
+            <button type="button" class="cl-chip" data-size="18">18</button>
+            <button type="button" class="cl-chip" data-size="20">20</button>
+            <button type="button" class="cl-chip" data-size="22">22</button>
+            <button type="button" class="cl-chip" data-size="24">24</button>
+            <button type="button" class="cl-chip" data-size="26">26</button>
+            <button type="button" class="cl-chip" data-size="28">28</button>
+            <button type="button" class="cl-chip" data-size="30">30</button>
+            <button type="button" class="cl-chip is-on" data-size="32">32</button>
+            <button type="button" class="cl-chip" data-size="34">34</button>
+            <button type="button" class="cl-chip" data-size="36">36</button>
+            <button type="button" class="cl-chip" data-size="38">38</button>
+            <button type="button" class="cl-chip" data-size="40">40</button>
+            <button type="button" class="cl-chip" data-size="42">42</button>
+            <button type="button" class="cl-chip" data-size="46">46</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GÜVEN VE OTORİTE ALANI (MODEL 2: ÇİFT KATMANLI MARQUEE TICKER + 4 ROZET KARTI) -->
+<section id="uretim" aria-label="Üretim gücü ve güven standartları" class="relative z-10 py-10 sm:py-14">
+  
+  <!-- 1. Katman: Sonsuz Kayan Ticker Bandı (Mini Marquee - Lüks Sıcak Bej) -->
+  <div class="w-full bg-[#ede4d4] border-y border-[#d6c7b2] py-3.5 overflow-hidden select-none shadow-sm">
+    <div class="animate-marquee flex items-center gap-10 text-xs sm:text-sm font-semibold tracking-[0.25em] uppercase text-[#1c2d26] font-sans">
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> DOĞRUDAN FABRİKADAN TOPTAN</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> 304 KALİTE PASLANMAZ SANAYİ SACI</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> HORECA PROJE TEDARİKÇİSİ</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> 30 YILLIK ATÖLYE TECRÜBESİ</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> İSTANBUL & TÜM TÜRKİYE SEVKİYAT</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <!-- Döngü Kesintisizliği İçin Çift Kopya -->
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> DOĞRUDAN FABRİKADAN TOPTAN</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> 304 KALİTE PASLANMAZ SANAYİ SACI</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> HORECA PROJE TEDARİKÇİSİ</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> 30 YILLIK ATÖLYE TECRÜBESİ</span>
+      <span class="text-[#1c2d26]/30">•</span>
+      <span class="inline-flex items-center gap-3"><span class="text-sand-600">★</span> İSTANBUL & TÜM TÜRKİYE SEVKİYAT</span>
+      <span class="text-[#1c2d26]/30">•</span>
+    </div>
+  </div>
+
+  <!-- 2. Katman: 3D İnteraktif WeAreWild Coverflow Slider -->
+  <div class="relative py-12 sm:py-16 overflow-hidden">
+    
+    <!-- Başlık ve Vurgu -->
+    <div class="container-x text-center mb-10 sm:mb-14" data-reveal>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-medium text-graphite-900 tracking-tight">
+        Endüstriyel Güç & Estetik Standartlar
+      </h2>
+      <p class="mt-3 text-sm sm:text-base text-graphite-600 max-w-xl mx-auto font-sans">
+        Horeca mutfakları için preslenen yüksek kaliteli alüminyum tavalar, fırın tepsileri ve sunum ekipmanlarımızı keşfedin.
+      </p>
+    </div>
+
+    <!-- 3D Coverflow Sahnesi -->
+    <div class="relative w-full max-w-6xl mx-auto px-4 sm:px-6">
+      
+      <!-- Sahne Konteynırı -->
+      <div id="coverflow-stage" class="relative w-full h-[540px] sm:h-[580px] perspective-stage flex items-center justify-center select-none">
+        
+        <!-- KART 1: Buz Mavisi (Periwinkle) - Pizza Tavası -->
+        <div class="coverflow-card card-spring-transition absolute w-[310px] sm:w-[350px] md:w-[370px] h-[500px] sm:h-[540px] rounded-[32px] p-6 sm:p-7 flex flex-col items-center justify-between cursor-pointer pastel-periwinkle border border-[#141f36]/10 shadow-[0_30px_70px_-15px_rgba(20,31,54,0.18)]"
+             data-index="0">
+          <!-- Üst Pill Rozet -->
+          <div class="w-full flex justify-center">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-bold tracking-wider uppercase text-[#141F36] border border-white/60 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#141F36]"></span>
+              30 Yıllık İmalat
+            </span>
+          </div>
+
+          <!-- Başlık & Açıklama -->
+          <div class="text-center mt-2">
+            <h3 class="text-2xl sm:text-3xl font-display font-bold text-[#141F36] tracking-tight">Pizza Tavası</h3>
+            <p class="text-xs sm:text-sm text-[#141F36]/80 font-medium mt-1 font-sans">Endüstriyel Pres Alüminyum</p>
+          </div>
+
+          <!-- 3D Ürün Objesi (Floating) -->
+          <div class="relative w-44 h-44 sm:w-52 sm:h-52 my-auto flex items-center justify-center pointer-events-none">
+            <img src="/static/images/pizza-pan-3d-trans.png?v=7" 
+                 alt="EKOMETAL Pizza Tavası 3D" 
+                 class="w-full h-full object-contain drop-shadow-[0_20px_25px_rgba(0,0,0,0.18)] animate-float" 
+                 loading="lazy">
+          </div>
+
+          <!-- Alt Buton (Hakkımızda Linki) -->
+          <a href="{% url 'core:product_list' %}" class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#141F36] text-cream-50 text-xs sm:text-sm font-semibold tracking-wide hover:bg-[#1E2D4A] transition-colors shadow-md group">
+            <span>Ürünleri İncele</span>
+            <span class="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+
+        <!-- KART 2: Sıcak Şeftali (Terracotta Mist) - Alüminyum Sote Tavası -->
+        <div class="coverflow-card card-spring-transition absolute w-[310px] sm:w-[350px] md:w-[370px] h-[500px] sm:h-[540px] rounded-[32px] p-6 sm:p-7 flex flex-col items-center justify-between cursor-pointer pastel-peach border border-[#351A10]/10 shadow-[0_30px_70px_-15px_rgba(53,26,16,0.18)]"
+             data-index="1">
+          <!-- Üst Pill Rozet -->
+          <div class="w-full flex justify-center">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-bold tracking-wider uppercase text-[#351A10] border border-white/60 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#351A10]"></span>
+              %100 Yerli Fabrika
+            </span>
+          </div>
+
+          <!-- Başlık & Açıklama -->
+          <div class="text-center mt-2">
+            <h3 class="text-2xl sm:text-3xl font-display font-bold text-[#351A10] tracking-tight">Sote & Pişirme Tavası</h3>
+            <p class="text-xs sm:text-sm text-[#351A10]/80 font-medium mt-1 font-sans">Ağır Hizmet Alüminyum Taban</p>
+          </div>
+
+          <!-- 3D Ürün Objesi (Floating) -->
+          <div class="relative w-44 h-44 sm:w-52 sm:h-52 my-auto flex items-center justify-center pointer-events-none">
+            <img src="/static/images/chef-pan-3d-trans.png?v=7" 
+                 alt="EKOMETAL Alüminyum Pişirme Tavası 3D" 
+                 class="w-full h-full object-contain drop-shadow-[0_20px_25px_rgba(0,0,0,0.18)] animate-float" 
+                 loading="lazy">
+          </div>
+
+          <!-- Alt Buton (Hakkımızda Linki) -->
+          <a href="{% url 'core:product_list' %}" class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#351A10] text-cream-50 text-xs sm:text-sm font-semibold tracking-wide hover:bg-[#4D281C] transition-colors shadow-md group">
+            <span>Ürünleri İncele</span>
+            <span class="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+
+        <!-- KART 3: Taze Adaçayı (Mint Frost) - Sanayi Fırın Tepsisi -->
+        <div class="coverflow-card card-spring-transition absolute w-[310px] sm:w-[350px] md:w-[370px] h-[500px] sm:h-[540px] rounded-[32px] p-6 sm:p-7 flex flex-col items-center justify-between cursor-pointer pastel-sage border border-[#102919]/10 shadow-[0_30px_70px_-15px_rgba(16,41,25,0.18)]"
+             data-index="2">
+          <!-- Üst Pill Rozet -->
+          <div class="w-full flex justify-center">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-bold tracking-wider uppercase text-[#102919] border border-white/60 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#102919]"></span>
+              Fırın & Pastane
+            </span>
+          </div>
+
+          <!-- Başlık & Açıklama -->
+          <div class="text-center mt-2">
+            <h3 class="text-2xl sm:text-3xl font-display font-bold text-[#102919] tracking-tight">Fırın Tepsileri</h3>
+            <p class="text-xs sm:text-sm text-[#102919]/80 font-medium mt-1 font-sans">Yüksek Isıya Dayanıklı Pres</p>
+          </div>
+
+          <!-- 3D Ürün Objesi (Floating) -->
+          <div class="relative w-44 h-44 sm:w-52 sm:h-52 my-auto flex items-center justify-center pointer-events-none">
+            <img src="/static/images/baking-tray-3d-trans.png?v=7" 
+                 alt="EKOMETAL Fırın Tepsisi 3D" 
+                 class="w-full h-full object-contain drop-shadow-[0_20px_25px_rgba(0,0,0,0.18)] animate-float" 
+                 loading="lazy">
+          </div>
+
+          <!-- Alt Buton (Hakkımızda Linki) -->
+          <a href="{% url 'core:product_list' %}" class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#102919] text-cream-50 text-xs sm:text-sm font-semibold tracking-wide hover:bg-[#1C422A] transition-colors shadow-md group">
+            <span>Ürünleri İncele</span>
+            <span class="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+
+        <!-- KART 4: Sıcak Krem (Vanilla Cream) - Çelik Sosluk & Çerezlik -->
+        <div class="coverflow-card card-spring-transition absolute w-[310px] sm:w-[350px] md:w-[370px] h-[500px] sm:h-[540px] rounded-[32px] p-6 sm:p-7 flex flex-col items-center justify-between cursor-pointer pastel-butter border border-[#2E220F]/10 shadow-[0_30px_70px_-15px_rgba(46,34,15,0.18)]"
+             data-index="3">
+          <!-- Üst Pill Rozet -->
+          <div class="w-full flex justify-center">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-bold tracking-wider uppercase text-[#2E220F] border border-white/60 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#2E220F]"></span>
+              Horeca Sunum Serisi
+            </span>
+          </div>
+
+          <!-- Başlık & Açıklama -->
+          <div class="text-center mt-2">
+            <h3 class="text-2xl sm:text-3xl font-display font-bold text-[#2E220F] tracking-tight">Sosluk & Çerezlik</h3>
+            <p class="text-xs sm:text-sm text-[#2E220F]/80 font-medium mt-1 font-sans">Paslanmaz Çelik & Çorba Kaseleri</p>
+          </div>
+
+          <!-- 3D Ürün Objesi (Floating) -->
+          <div class="relative w-44 h-44 sm:w-52 sm:h-52 my-auto flex items-center justify-center pointer-events-none">
+            <img src="/static/images/sauce-cup-3d-trans.png?v=7" 
+                 alt="EKOMETAL Çelik Sosluk ve Çerezlik 3D" 
+                 class="w-full h-full object-contain drop-shadow-[0_20px_25px_rgba(0,0,0,0.18)] animate-float" 
+                 loading="lazy">
+          </div>
+
+          <!-- Alt Buton (Hakkımızda Linki) -->
+          <a href="{% url 'core:product_list' %}" class="w-full inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full bg-[#2E220F] text-cream-50 text-xs sm:text-sm font-semibold tracking-wide hover:bg-[#453418] transition-colors shadow-md group">
+            <span>Ürünleri İncele</span>
+            <span class="inline-block transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Navigasyon Ok Butonları -->
+      <button id="coverflow-prev" aria-label="Önceki Ürün" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-[#1c2d26] text-cream-50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 hover:bg-[#253d33]">
+        <svg class="w-5 h-5 -translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button id="coverflow-next" aria-label="Sonraki Ürün" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-[#1c2d26] text-cream-50 flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 hover:bg-[#253d33]">
+        <svg class="w-5 h-5 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <!-- Alt Sayfalama (Pagination Dots) -->
+      <div id="coverflow-dots" class="flex items-center justify-center gap-2.5 mt-8">
+        <button data-dot="0" aria-label="Ürün 1" class="h-2 rounded-full transition-all duration-300 w-8 bg-[#1c2d26]"></button>
+        <button data-dot="1" aria-label="Ürün 2" class="h-2 rounded-full transition-all duration-300 w-2.5 bg-[#1c2d26]/30 hover:bg-[#1c2d26]/60"></button>
+        <button data-dot="2" aria-label="Ürün 3" class="h-2 rounded-full transition-all duration-300 w-2.5 bg-[#1c2d26]/30 hover:bg-[#1c2d26]/60"></button>
+        <button data-dot="3" aria-label="Ürün 4" class="h-2 rounded-full transition-all duration-300 w-2.5 bg-[#1c2d26]/30 hover:bg-[#1c2d26]/60"></button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ÖNE ÇIKAN KATEGORİLER (APPLE "GET THE HIGHLIGHTS" ETKİLEŞİMLİ VİTRİN) -->
+<section id="kategoriler" class="pt-24 pb-12 overflow-hidden bg-cream-100">
+  <div class="container-x">
+    <!-- Apple Stili Üst Başlık & Aksiyon Linki -->
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between" data-reveal>
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-sand-600 font-semibold">ÖNE ÇIKAN KOLEKSİYONLAR</p>
+        <h2 class="mt-3 text-3xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight text-graphite-900">Kategorileri Keşfedin.</h2>
+      </div>
+      <div>
+        <a href="{% url 'core:product_list' %}" class="inline-flex items-center gap-2 text-sm font-semibold text-[#1c2d26] hover:text-sand-600 transition-colors group">
+          <span>Tüm Ürün Kataloğunu İncele</span>
+          <span class="inline-block transition-transform duration-200 group-hover:translate-x-1 font-sans">→</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Apple Carousel Sahnesi (Peek Effect: Kenarlardan hafif taşma) -->
+  <div class="relative w-full mt-10 select-none overflow-hidden" id="apple-highlights-stage">
+    
+    <!-- Kayar İz (Track) -->
+    <div id="apple-highlights-track" class="flex items-center will-change-transform transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] py-4">
+      {% for item in showcase_categories %}
+      <!-- DYNAMIC SLIDE: {{ item.category.name }} -->
+      <div class="apple-slide flex-shrink-0 w-[88vw] sm:w-[84vw] lg:w-[80vw] max-w-[1180px] h-[560px] sm:h-[600px] mx-3 sm:mx-5 rounded-[32px] sm:rounded-[40px] overflow-hidden bg-gradient-to-br {{ item.theme.bg_gradient }} border {{ item.theme.border }} {{ item.theme.text_color }} relative p-7 sm:p-12 flex flex-col justify-between transition-all duration-700 {% if forloop.first %}apple-card-active{% else %}apple-card-inactive{% endif %} {{ item.theme.shadow }}" data-slide-index="{{ forloop.counter0 }}">
+        <!-- Arka Plan Ambient Isilti -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full {{ item.theme.glow_1 }} blur-3xl pointer-events-none animate-pulse-subtle"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full {{ item.theme.glow_2 }} blur-3xl pointer-events-none animate-pulse-subtle"></div>
+        
+        <!-- Ust Kategori Basligi & Sayac -->
+        <div class="relative z-10 flex items-baseline justify-between pb-1">
+          <h3 class="text-xl sm:text-2xl lg:text-3xl font-display font-semibold tracking-tight {{ item.theme.text_color }}">
+            {{ item.category.name }}
+          </h3>
+          <span class="text-xs font-mono uppercase tracking-widest {{ item.theme.text_color }}/70 font-semibold">{{ item.index_display }} / {{ total_categories_display }}</span>
+        </div>
+
+        <!-- Orta Sahne: Kutu Ici Sonsuz Hareketli Urun Vitrini (Cinematic Inner Stream) -->
+        <div class="relative z-10 w-full overflow-hidden my-auto py-2 inner-stream-wrapper inner-stream-mask">
+          {% if item.has_products %}
+          <div class="inner-stream-track-{{ item.direction }} gap-4 sm:gap-5 py-3">
+            <!-- Set 1 -->
+            {% for prod in item.products %}
+            <a href="{% url 'core:category' item.category.slug %}" class="w-[210px] sm:w-[250px] h-[290px] sm:h-[330px] flex-shrink-0 group/tile relative rounded-[26px] overflow-hidden border border-black/10 shadow-2xl bg-black/40 backdrop-blur-md transition-all duration-300 hover:scale-[1.04] hover:border-sand-400/60 cursor-pointer block">
+              {% if prod.image %}
+              <img src="{{ prod.image.url }}" alt="{{ prod.name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover/tile:scale-110" loading="lazy">
+              {% elif item.category.image %}
+              <img src="{{ item.category.image.url }}" alt="{{ prod.name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover/tile:scale-110" loading="lazy">
+              {% else %}
+              <div class="w-full h-full flex items-center justify-center bg-graphite-800 text-sand-300 font-mono text-xs">Eko Metal</div>
+              {% endif %}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
+              <div class="absolute bottom-3.5 inset-x-3.5 flex flex-col">
+                <span class="text-sm font-semibold text-white drop-shadow leading-tight line-clamp-1">{{ prod.name }}</span>
+                <span class="text-[0.68rem] font-mono text-sand-300 uppercase tracking-widest mt-1">{{ prod.model_code }}{% if prod.spec_rows %} • {{ prod.spec_rows.0.0 }}{% endif %}</span>
+              </div>
+            </a>
+            {% endfor %}
+
+            <!-- Set 2 (Dikisiz Akis Icin Tekrar) -->
+            {% for prod in item.products %}
+            <a href="{% url 'core:category' item.category.slug %}" class="w-[210px] sm:w-[250px] h-[290px] sm:h-[330px] flex-shrink-0 group/tile relative rounded-[26px] overflow-hidden border border-black/10 shadow-2xl bg-black/40 backdrop-blur-md transition-all duration-300 hover:scale-[1.04] hover:border-sand-400/60 cursor-pointer block">
+              {% if prod.image %}
+              <img src="{{ prod.image.url }}" alt="{{ prod.name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover/tile:scale-110" loading="lazy">
+              {% elif item.category.image %}
+              <img src="{{ item.category.image.url }}" alt="{{ prod.name }}" class="w-full h-full object-cover transition-transform duration-700 group-hover/tile:scale-110" loading="lazy">
+              {% else %}
+              <div class="w-full h-full flex items-center justify-center bg-graphite-800 text-sand-300 font-mono text-xs">Eko Metal</div>
+              {% endif %}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent"></div>
+              <div class="absolute bottom-3.5 inset-x-3.5 flex flex-col">
+                <span class="text-sm font-semibold text-white drop-shadow leading-tight line-clamp-1">{{ prod.name }}</span>
+                <span class="text-[0.68rem] font-mono text-sand-300 uppercase tracking-widest mt-1">{{ prod.model_code }}{% if prod.spec_rows %} • {{ prod.spec_rows.0.0 }}{% endif %}</span>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="w-full h-[290px] sm:h-[330px] flex items-center justify-center rounded-[26px] border border-black/10 bg-black/5">
+            <p class="text-sm font-medium {{ item.theme.text_color }}/70">Bu kategoride yakında yeni ürünler sergilenecektir.</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Alt Aksiyon Butonu & Ipucu -->
+        <div class="relative z-10 flex items-center justify-between pt-1">
+          <a href="{% url 'core:category' item.category.slug %}" class="inline-flex items-center gap-3 px-7 py-3.5 rounded-full {{ item.theme.btn_bg }} {{ item.theme.btn_text }} text-xs sm:text-sm font-bold tracking-wide hover:scale-105 transition-all shadow-xl group">
+            <span>Tüm {{ item.category.name }} Modellerini Keşfet</span>
+            <span class="inline-block transition-transform duration-200 group-hover:translate-x-1.5 font-bold">→</span>
+          </a>
+          <span class="text-xs font-mono {{ item.theme.text_color }}/60 hidden sm:inline-flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full {{ item.theme.badge_color }}"></span>
+            Canlı Ürün Akışı
+          </span>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+
+    <!-- Apple Tarzı Sol & Sağ Şeffaf Ok Butonları (Masaüstü için konforlu gezinme) -->
+    <button id="apple-prev-btn" aria-label="Önceki Kategori" class="hidden md:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-[#1c2d26]/75 hover:bg-[#1c2d26] text-cream-50 items-center justify-center backdrop-blur-md border border-white/10 shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer">
+      <svg class="w-5 h-5 -translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    <button id="apple-next-btn" aria-label="Sonraki Kategori" class="hidden md:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-[#1c2d26]/75 hover:bg-[#1c2d26] text-cream-50 items-center justify-center backdrop-blur-md border border-white/10 shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer">
+      <svg class="w-5 h-5 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Apple İkonik Alt Kontrol Kapsülü (Floating Pill with Progress Dots & Play/Pause) -->
+  <div class="flex items-center justify-center mt-6">
+    <div id="apple-pill-bar" class="inline-flex items-center gap-2.5 sm:gap-3.5 px-5 py-2.5 rounded-full bg-[#1c2d26]/90 backdrop-blur-xl border border-white/15 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.35)] select-none">
+      
+      <!-- Slayt Göstergeleri (Aktif olan hap gibi uzar ve içi dolar) -->
+      <div id="apple-progress-dots" class="flex items-center gap-2 sm:gap-2.5">
+        {% for item in showcase_categories %}
+        <button data-index="{{ forloop.counter0 }}" aria-label="{{ item.category.name }}" class="apple-dot group relative h-2.5 rounded-full transition-all duration-300 {% if forloop.first %}w-12 bg-white/20{% else %}w-2.5 bg-white/30 hover:bg-white/60{% endif %} overflow-hidden cursor-pointer">
+          <div class="apple-dot-fill absolute inset-y-0 left-0 bg-white rounded-full transition-all duration-100 ease-linear" style="width: 0%;"></div>
+        </button>
+        {% endfor %}
+      </div>
+      <!-- İnce Dikey Ayırıcı -->
+      <div class="w-px h-3.5 bg-white/20 mx-1"></div>
+
+      <!-- Play / Pause Butonu -->
+      <button id="apple-play-pause-btn" class="w-6 h-6 rounded-full flex items-center justify-center text-white/80 hover:text-white transition-colors cursor-pointer" aria-label="Otomatik Oynatmayı Durdur">
+        <!-- Pause Icon (varsayılan çalışırken) -->
+        <svg id="apple-pause-icon" class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+          <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+        <!-- Play Icon (duraklatıldığında gizli) -->
+        <svg id="apple-play-icon" class="w-3.5 h-3.5 fill-current hidden" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ÖNE ÇIKAN ÜRÜNLER -->
+<section id="urunler" class="container-x pt-24">
+  <div class="text-center" data-reveal>
+    <p class="text-xs uppercase tracking-[0.3em] text-sand-600">Seçkin Ürünler</p>
+    <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl">Öne Çıkan Ürünler</h2>
+  </div>
+
+  {% if featured_products %}
+  <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {% for product in featured_products %}
+    <div data-reveal>{% include "partials/product_card.html" %}</div>
+    {% endfor %}
+  </div>
+  <div class="mt-12 text-center">
+    <a href="{% url 'core:product_list' %}" id="all-products-btn" class="btn-outline">Tüm Ürünleri Gör</a>
+  </div>
+  {% else %}
+  <p class="mt-14 border border-dashed border-cream-300 p-10 text-center text-graphite-500">Öne çıkan ürün bulunmuyor. Yönetim panelinde bir ürünü "Ana Sayfada Öne Çıkar" olarak işaretleyin.</p>
+  {% endif %}
+</section>
+
+<!-- NEDEN BİZ -->
+<section id="kurumsal" class="mt-20 sm:mt-24 bg-cream-50 border-t border-cream-300">
+  <div class="container-x pt-16 sm:pt-20 pb-8 sm:pb-10">
+    <div class="max-w-2xl" data-reveal>
+      <p class="text-xs uppercase tracking-[0.3em] text-sand-600">Neden EKOMETAL?</p>
+      <h2 class="mt-3 text-3xl sm:text-4xl lg:text-5xl">İşletmenizin güvenebileceği tedarik ortağı</h2>
+    </div>
+    <div class="mt-14 grid gap-px bg-cream-300 md:grid-cols-3">
+      <div class="bg-cream-50 p-8 sm:p-10" data-reveal>
+        <span class="font-display text-5xl text-sand-400">01</span>
+        <h3 class="mt-6 text-xl">İmalatçı Fiyatı</h3>
+        <p class="mt-3 text-graphite-500 leading-relaxed">Aracı yok. Kendi atölyemizde ürettiğimiz ekipmanları doğrudan, toptan ve rekabetçi fiyatla sunuyoruz.</p>
+      </div>
+      <div class="bg-cream-50 p-8 sm:p-10" data-reveal>
+        <span class="font-display text-5xl text-sand-400">02</span>
+        <h3 class="mt-6 text-xl">Kesintisiz Stok</h3>
+        <p class="mt-3 text-graphite-500 leading-relaxed">Sık talep gören modeller sürekli stokta. Toptan siparişlerde hızlı hazırlık ve İstanbul geneli sevkiyat.</p>
+      </div>
+      <div class="bg-cream-50 p-8 sm:p-10" data-reveal>
+        <span class="font-display text-5xl text-sand-400">03</span>
+        <h3 class="mt-6 text-xl">Endüstriyel Dayanıklılık</h3>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function() {
+    function alignWithNavbar() {
+      const pill = document.getElementById('header-pill');
+      const container = document.getElementById('hero-container-box');
+      const content = document.getElementById('hero-content-group');
+      if (pill && container && content && window.innerWidth >= 768) {
+        const pillLeft = pill.getBoundingClientRect().left;
+        const containerLeft = container.getBoundingClientRect().left;
+        const offset = Math.max(0, pillLeft - containerLeft);
+        content.style.marginLeft = offset + 'px';
+      } else if (content) {
+        content.style.marginLeft = '';
+      }
+    }
+    window.addEventListener('resize', alignWithNavbar);
+    window.addEventListener('load', alignWithNavbar);
+    document.addEventListener('DOMContentLoaded', alignWithNavbar);
+    alignWithNavbar();
+    setTimeout(alignWithNavbar, 300);
+  })();
+</script>
+<script>
+  /* ===== ÖNE ÇIKAN ÜRÜN: KAMERA SAHNESİ (Apple 'Take a closer look' mantığı) ===== */
+  (function () {
+    const card = document.getElementById('cl-card');
+    if (!card || !window.gsap) return;
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const D = (s) => (reduce ? 0.01 : s);
+    const q = (s) => card.querySelector(s);
+    const qa = (s) => Array.from(card.querySelectorAll(s));
+
+    const layers = {};
+    qa('.cl-layer').forEach((l) => { layers[l.dataset.layer] = l; });
+    const cam = q('#cl-cam'), floatEl = q('#cl-float'), dim = q('#cl-dim'), sheen = q('#cl-sheen');
+    const sq = q('#cl-sq'), sizesEl = q('#cl-sizes'), numEl = q('#cl-size-num'), nameEl = q('#cl-prodname');
+    const chips = qa('.cl-chip'), ripples = qa('.cl-ripple'), dots = qa('.cl-dot');
+    const items = qa('.cl-item[data-pill]');
+    const ORDER = ['tasarim', 'delik', 'malzeme', 'olcu'];
+    const EASE = 'expo.out';
+    const AUTO_SEC = 6.5;
+
+    const S = { pill: null, color: 'al', size: 32, kind: 'main', auto: !reduce, inView: false };
+    let ringTween = null;
+
+    /* Başlangıç durumu */
+    gsap.set(Object.values(layers), { opacity: 0 });
+    gsap.set(layers['main-al'], { opacity: 1 });
+    gsap.set(cam, { transformOrigin: '50% 50%' });
+    gsap.set(dim, { opacity: 0, scaleX: 0 });
+    gsap.set(sizesEl, { opacity: 0, y: 16 });
+    gsap.set(ripples, { opacity: 0 });
+    gsap.set(sheen, { opacity: 0, skewX: -16 });
+    if (!reduce) gsap.to(floatEl, { y: -10, duration: 3.2, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+
+    const kindFor = (p) => (p === 'delik' ? 'hole' : p === 'malzeme' ? 'rim' : 'main');
+
+    function render(opts) {
+      opts = opts || {};
+      const kind = kindFor(S.pill);
+      const prevKind = S.kind;
+      S.kind = kind;
+      const want = kind + '-' + S.color;
+
+      /* 1) Katmanlar: çapraz geçiş */
+      Object.keys(layers).forEach((k) => {
+        const el = layers[k];
+        if (k === want) {
+          if (kind === 'main' || opts.colorOnly) {
+            gsap.to(el, { opacity: 1, scale: 1, duration: D(0.6), overwrite: true });
+          } else {
+            gsap.fromTo(el, { opacity: 0, scale: 1.16 }, { opacity: 1, scale: 1, duration: D(1.1), delay: prevKind === 'main' ? D(0.35) : 0, ease: EASE, overwrite: true });
+          }
+        } else {
+          const zoomAway = k.indexOf('main') === 0 && kind !== 'main' && prevKind === 'main' && !opts.colorOnly;
+          gsap.to(el, { opacity: 0, duration: D(0.55), delay: zoomAway ? D(0.4) : 0, overwrite: true });
+        }
+      });
+
+      /* 2) Kamera */
+      if (!opts.colorOnly) {
+        if (kind === 'main') {
+          const fromDetail = prevKind !== 'main';
+          const olcu = S.pill === 'olcu';
+          const tasarim = S.pill === 'tasarim';
+          const target = {
+            scale: olcu ? (S.size / 46) * 0.88 : tasarim ? 1.04 : 1,
+            yPercent: olcu ? -7 : 0,
+            rotation: tasarim ? -4 : 0,
+            duration: D(1.2), ease: EASE, overwrite: true
+          };
+          gsap.set(cam, { transformOrigin: '50% 50%' });
+          if (fromDetail) gsap.fromTo(cam, { scale: 1.5, rotation: 0, yPercent: 0 }, target);
+          else if (tasarim && !S.seenTasarim) { S.seenTasarim = true; gsap.fromTo(cam, { scale: 0.86, rotation: -14 }, target); }
+          else gsap.to(cam, target);
+        } else {
+          const origin = S.pill === 'malzeme' ? '12% 74%' : '50% 50%';
+          gsap.set(cam, { transformOrigin: origin });
+          gsap.to(cam, { scale: 2.4, rotation: 0, yPercent: 0, duration: D(0.95), ease: 'power3.inOut', overwrite: true });
+        }
+      }
+
+      /* 3) Ölçü arayüzü */
+      const olcuOn = S.pill === 'olcu';
+      sizesEl.classList.toggle('on', olcuOn);
+      if (olcuOn) {
+        gsap.to(sizesEl, { opacity: 1, y: 0, duration: D(0.7), delay: D(0.25), ease: EASE, overwrite: true });
+        gsap.fromTo(chips, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: D(0.6), stagger: reduce ? 0 : 0.03, delay: D(0.35), ease: EASE, overwrite: true });
+        gsap.to(dim, { opacity: 1, scaleX: 1, duration: D(0.9), delay: D(0.3), ease: EASE, overwrite: true });
+      } else {
+        gsap.to(sizesEl, { opacity: 0, y: 16, duration: D(0.35), overwrite: true });
+        gsap.to(dim, { opacity: 0, scaleX: 0, duration: D(0.35), overwrite: true });
+      }
+
+      /* 4) Delik: dalga halkaları */
+      ripples.forEach((r, i) => {
+        gsap.killTweensOf(r);
+        if (S.pill === 'delik' && !reduce) {
+          gsap.fromTo(r, { scale: 0.1, opacity: 0.8 }, { scale: 3.3, opacity: 0, duration: 2.8, ease: 'power1.out', repeat: -1, delay: 0.9 + i * 0.9 });
+        } else {
+          gsap.set(r, { opacity: 0 });
+        }
+      });
+
+      /* 5) Malzeme: yansıma süpürmesi */
+      gsap.killTweensOf(sheen);
+      if (S.pill === 'malzeme' && !reduce) {
+        const W = sq.offsetWidth || 600;
+        gsap.fromTo(sheen, { x: -W * 0.5, opacity: 1 }, { x: W * 1.2, duration: 1.7, delay: 0.95, ease: 'power2.inOut', onComplete: () => gsap.set(sheen, { opacity: 0 }) });
+      } else {
+        gsap.set(sheen, { opacity: 0 });
+      }
+    }
+
+    /* Pill arayüzü + otomatik gezinme halkası */
+    function syncUI() {
+      items.forEach((it) => {
+        const on = it.dataset.pill === S.pill;
+        it.classList.toggle('open', on);
+        const b = it.querySelector('.cl-pill');
+        if (b) b.setAttribute('aria-expanded', String(on));
+      });
+    }
+    function startRing() {
+      if (ringTween) { ringTween.kill(); ringTween = null; }
+      qa('.cl-ring').forEach((c) => gsap.set(c, { strokeDashoffset: 1 }));
+      if (!S.auto || !S.pill) return;
+      const ring = q('.cl-item.open .cl-ring');
+      if (!ring) return;
+      ringTween = gsap.fromTo(ring, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: AUTO_SEC, ease: 'none', onComplete: () => step(1, false) });
+      if (!S.inView) ringTween.pause();
+    }
+    function stopAuto() {
+      S.auto = false;
+      card.classList.add('no-auto');
+      if (ringTween) { ringTween.kill(); ringTween = null; }
+    }
+
+    function openPill(p, user) {
+      if (user) stopAuto();
+      S.pill = p;
+      syncUI();
+      render();
+      startRing();
+    }
+    function closePill(user) {
+      if (user) stopAuto();
+      S.pill = null;
+      syncUI();
+      render();
+      startRing();
+    }
+    function step(dir, user) {
+      const i = ORDER.indexOf(S.pill);
+      const n = i === -1 ? (dir > 0 ? 0 : ORDER.length - 1) : (i + dir + ORDER.length) % ORDER.length;
+      openPill(ORDER[n], user);
+    }
+
+    function setColor(c, user) {
+      if (user) stopAuto();
+      if (c === S.color) return;
+      S.color = c;
+      card.dataset.color = c;
+      dots.forEach((d) => {
+        const on = d.dataset.color === c;
+        d.classList.toggle('is-on', on);
+        d.setAttribute('aria-checked', String(on));
+      });
+      gsap.fromTo(nameEl, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: D(0.6), ease: EASE });
+      render({ colorOnly: true });
+    }
+
+    function setSize(sz) {
+      stopAuto();
+      S.size = sz;
+      chips.forEach((c) => c.classList.toggle('is-on', Number(c.dataset.size) === sz));
+      const obj = { v: parseFloat(numEl.textContent) || sz };
+      gsap.to(obj, { v: sz, duration: D(0.6), ease: 'power2.out', onUpdate: () => { numEl.textContent = Math.round(obj.v); } });
+      if (S.pill === 'olcu') gsap.to(cam, { scale: (sz / 46) * 0.88, duration: D(0.9), ease: EASE, overwrite: 'auto' });
+    }
+
+    /* Olaylar */
+    items.forEach((it) => {
+      const p = it.dataset.pill;
+      it.querySelector('.cl-pill').addEventListener('click', () => openPill(p, true));
+      it.querySelector('.cl-close').addEventListener('click', () => closePill(true));
+    });
+    dots.forEach((d) => d.addEventListener('click', () => setColor(d.dataset.color, true)));
+    chips.forEach((c) => c.addEventListener('click', () => setSize(Number(c.dataset.size))));
+    q('#cl-prev').addEventListener('click', () => step(-1, true));
+    q('#cl-next').addEventListener('click', () => step(1, true));
+
+    /* Kategoriye Git: Otomatik gezinmeyi durdur, doğal sayfa geçişi sağla */
+    const link = q('#cl-link');
+    if (link) {
+      link.addEventListener('click', () => {
+        stopAuto();
+      });
+    }
+
+    /* Sahneye giriş + görünürlüğe bağlı otomatik gezinme */
+    if (window.ScrollTrigger && !reduce) {
+      gsap.from(card, { y: 70, scale: 0.94, opacity: 0, duration: 1.2, ease: 'power3.out', scrollTrigger: { trigger: card, start: 'top 88%', once: true } });
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        S.inView = entries[0].isIntersecting;
+        if (S.inView) {
+          if (S.auto && !S.pill) setTimeout(() => { if (S.auto && S.inView && !S.pill) openPill('tasarim', false); }, 900);
+          else if (ringTween) ringTween.resume();
+        } else if (ringTween) {
+          ringTween.pause();
+        }
+      }, { threshold: 0.55 }).observe(card);
+    }
+  })();
+</script>
+{% endblock %}

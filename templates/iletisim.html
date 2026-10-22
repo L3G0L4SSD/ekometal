@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}İletişim &amp; Destek Merkezi | EKOMETAL Endüstriyel Mutfak{% endblock %}
+{% block meta_description %}EKOMETAL fabrika, showroom ve iletişim merkezi. Toptan mutfak ekipmanları ve projeye özel paslanmaz çelik teklifleri için bize ulaşın.{% endblock %}
+
+{% block content %}
+
+<!-- 1. APPLE SUPPORT STYLE HERO SECTION -->
+<section class="relative isolate overflow-hidden bg-gradient-to-b from-[#fbfdfa] via-[#f1f6f2] to-[#e4ece5] pt-24 pb-16 sm:pt-32 sm:pb-24 border-b border-[#1c3527]/10 text-center">
+  <!-- Arka Plan Zarif Işıltı Efekti -->
+  <div class="absolute inset-0 -z-10 bg-[radial-gradient(45%_50%_at_50%_40%,rgba(180,195,170,0.35)_0%,transparent_100%)] pointer-events-none"></div>
+
+  <div class="container-x">
+    <!-- Apple Dairesel Logo Rozeti (Resmi EKOMETAL Altın Amblemi) -->
+    <div class="inline-flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#1c2d26] shadow-[0_20px_45px_-10px_rgba(20,40,30,0.35)] ring-8 ring-[#1c2d26]/8 mb-6 mx-auto transition-transform duration-500 hover:scale-105 p-5">
+      <img src="{% static 'images/ekometal-icon-gold.png' %}" alt="EKOMETAL Logo" class="w-full h-full object-contain filter drop-shadow">
+    </div>
+
+    <!-- Apple Support Tipografisi & Marka İmzası -->
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display text-[#14281e] tracking-tight">
+      EKOMETAL Destek &amp; İletişim
+    </h1>
+    <div class="mt-2.5 text-xs uppercase tracking-[0.25em] font-semibold text-[#8f7849]">
+      EKO — Sustainable Metal
+    </div>
+    <p class="mt-4 text-base sm:text-lg text-[#1c3527]/80 max-w-xl mx-auto leading-relaxed font-sans">
+      Toptan fiyat teklifi, fabrika ziyareti veya projeye özel paslanmaz imalat. Size nasıl yardımcı olabiliriz?
+    </p>
+
+
+  </div>
+</section>
+
+<!-- 2. APPLE-STYLE 3'LÜ HIZLI EYLEM MERKEZİ (QUICK ACTION CARDS) -->
+<section class="container-x -mt-8 relative z-20">
+  <div class="grid gap-6 md:grid-cols-3">
+
+    <!-- KART 1: WHATSAPP CANLI HATTI -->
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-8 border border-[#1c3527]/10 shadow-[0_15px_45px_-15px_rgba(20,40,30,0.08)] hover:shadow-[0_25px_60px_-15px_rgba(20,40,30,0.14)] transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-[#25D366]/15 text-[#25D366] flex items-center justify-center shadow-inner">
+            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5zM12 21.9c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 0 1 2.1 12C2.1 6.5 6.5 2.1 12 2.1c2.6 0 5.1 1 7 2.9a9.800 9.800 0 0 1 2.9 7c0 5.500-4.400 9.900-9.900 9.900zm5.400-7.400c-.3-.1-1.800-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.200-.3.200-.6.100a8 8 0 0 1-4-3.500c-.3-.5.3-.5.900-1.600.1-.2 0-.4 0-.5l-.9-2.200c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400s-1 1-1 2.400 1 2.800 1.200 3a11 11 0 0 0 4.700 4.100c1.700.7 2.400.8 3.200.7.5-.1 1.800-.7 2-1.400s.3-1.300.2-1.400-.3-.2-.6-.3z"/></svg>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1c2d26] bg-[#25D366]/20 px-3 py-1 rounded-full">
+            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span></span>
+            Canlı Hat
+          </span>
+        </div>
+        <h3 class="mt-6 text-xl font-display text-[#14281e]">WhatsApp Teklif</h3>
+        <p class="mt-2 text-sm text-[#1c3527]/75 leading-relaxed">
+          İhtiyacınız olan model veya adedi iletin, <strong class="text-[#14281e] font-semibold">Nur Özdemir</strong> doğrudan toptan teklifinizi hazırlasın.
+        </p>
+      </div>
+      <div class="mt-6 pt-4 border-t border-[#1c3527]/8">
+        <a href="https://wa.me/{{ whatsapp_number }}?text={{ 'Merhaba Nur Hanım, EKOMETAL ürünleri ve toptan teklif hakkında bilgi almak istiyorum.'|urlencode }}"
+           target="_blank" rel="noopener"
+           class="btn-whatsapp-hover w-full inline-flex items-center justify-center gap-2 bg-[#1c2d26] text-white py-3 px-4 rounded-xl text-sm font-semibold tracking-wide uppercase shadow-sm">
+          Sohbet Başlat (Nur Özdemir)
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- KART 2: TELEFON & ÇAĞRI HATLARI -->
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-8 border border-[#1c3527]/10 shadow-[0_15px_45px_-15px_rgba(20,40,30,0.08)] hover:shadow-[0_25px_60px_-15px_rgba(20,40,30,0.14)] transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-sand-400/20 text-[#8f7849] flex items-center justify-center shadow-inner">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          </div>
+          <span class="text-xs font-semibold text-[#8f7849] bg-sand-400/20 px-3 py-1 rounded-full">
+            Pzt – Cmt: 08:30 – 18:30
+          </span>
+        </div>
+        <h3 class="mt-6 text-xl font-display text-[#14281e]">Doğrudan Fabrika &amp; Satış Hatları</h3>
+        <p class="mt-2 text-sm text-[#1c3527]/75 leading-relaxed">
+          Büyük Horeca projeleri ve özel imalat talepleri için yetkililerimizle doğrudan görüşün.
+        </p>
+      </div>
+      <div class="mt-6 pt-4 border-t border-[#1c3527]/8 space-y-2.5">
+        <!-- Ekrem Özdemir -->
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-cream-50/80 border border-[#1c3527]/10 hover:border-[#1c3527]/20 transition-all">
+          <div>
+            <div class="text-xs font-semibold text-[#14281e]">{{ contact_1_name }}</div>
+            <a href="tel:+{{ contact_1_raw }}" class="text-xs text-[#1c3527]/80 hover:text-[#14281e] font-mono font-medium hover:underline">{{ contact_1_phone }}</a>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <a href="tel:+{{ contact_1_raw }}" title="{{ contact_1_name }}'i Ara" class="p-2 rounded-lg bg-[#14281e] text-white hover:bg-[#1e3c2e] transition-colors" aria-label="{{ contact_1_name }} Ara">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </a>
+            <a href="https://wa.me/{{ contact_1_raw }}?text={{ 'Merhaba Ekrem Bey, EKOMETAL ürünleri hakkında bilgi almak istiyorum.'|urlencode }}" target="_blank" rel="noopener" title="WhatsApp Mesaj Gönder" class="p-2 rounded-lg bg-[#25D366] text-white hover:brightness-105 transition-all" aria-label="{{ contact_1_name }} WhatsApp">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5zM12 21.9c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 0 1 2.1 12C2.1 6.5 6.5 2.1 12 2.1c2.6 0 5.1 1 7 2.9a9.800 9.800 0 0 1 2.9 7c0 5.500-4.400 9.900-9.900 9.900zm5.400-7.400c-.3-.1-1.800-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.200-.3.200-.6.100a8 8 0 0 1-4-3.500c-.3-.5.3-.5.900-1.600.1-.2 0-.4 0-.5l-.9-2.200c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400s-1 1-1 2.400 1 2.800 1.200 3a11 11 0 0 0 4.700 4.100c1.700.7 2.400.8 3.200.7.5-.1 1.800-.7 2-1.400s.3-1.300.2-1.400-.3-.2-.6-.3z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Nur Özdemir -->
+        <div class="flex items-center justify-between p-2.5 rounded-xl bg-cream-50/80 border border-[#1c3527]/10 hover:border-[#1c3527]/20 transition-all">
+          <div>
+            <div class="text-xs font-semibold text-[#14281e]">{{ contact_2_name }}</div>
+            <a href="tel:+{{ contact_2_raw }}" class="text-xs text-[#1c3527]/80 hover:text-[#14281e] font-mono font-medium hover:underline">{{ contact_2_phone }}</a>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <a href="tel:+{{ contact_2_raw }}" title="{{ contact_2_name }}'i Ara" class="p-2 rounded-lg bg-[#14281e] text-white hover:bg-[#1e3c2e] transition-colors" aria-label="{{ contact_2_name }} Ara">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+            </a>
+            <a href="https://wa.me/{{ contact_2_raw }}?text={{ 'Merhaba Nur Hanım, EKOMETAL ürünleri hakkında bilgi almak istiyorum.'|urlencode }}" target="_blank" rel="noopener" title="WhatsApp Mesaj Gönder" class="p-2 rounded-lg bg-[#25D366] text-white hover:brightness-105 transition-all" aria-label="{{ contact_2_name }} WhatsApp">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.5 3.5A11.9 11.9 0 0 0 12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6A12 12 0 0 0 12 24c6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.5zM12 21.9c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 0 1 2.1 12C2.1 6.5 6.5 2.1 12 2.1c2.6 0 5.1 1 7 2.9a9.800 9.800 0 0 1 2.9 7c0 5.500-4.400 9.900-9.900 9.900zm5.400-7.400c-.3-.1-1.800-.9-2-1s-.5-.1-.7.1-.8 1-.9 1.200-.3.200-.6.100a8 8 0 0 1-4-3.500c-.3-.5.3-.5.900-1.600.1-.2 0-.4 0-.5l-.9-2.200c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400s-1 1-1 2.400 1 2.800 1.200 3a11 11 0 0 0 4.700 4.100c1.700.7 2.400.8 3.200.7.5-.1 1.800-.7 2-1.400s.3-1.300.2-1.400-.3-.2-.6-.3z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KART 3: BAYRAMPAŞA SHOWROOM -->
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-8 border border-[#1c3527]/10 shadow-[0_15px_45px_-15px_rgba(20,40,30,0.08)] hover:shadow-[0_25px_60px_-15px_rgba(20,40,30,0.14)] transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-[#1c2d26]/10 text-[#14281e] flex items-center justify-center shadow-inner">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <span class="text-xs font-semibold text-[#14281e] bg-[#1c2d26]/10 px-3 py-1 rounded-full">
+            Showroom &amp; Atölye
+          </span>
+        </div>
+        <h3 class="mt-6 text-xl font-display text-[#14281e]">Numune &amp; Ziyaret</h3>
+        <p class="mt-2 text-sm text-[#1c3527]/75 leading-relaxed">
+          {{ site_address }}
+        </p>
+      </div>
+      <div class="mt-6 pt-4 border-t border-[#1c3527]/8">
+        <a href="https://maps.google.com/?q={{ site_address|urlencode }}" target="_blank" rel="noopener"
+           class="w-full inline-flex items-center justify-center gap-2 bg-white border border-[#1c3527]/15 hover:bg-[#14281e] hover:text-white hover:border-[#14281e] text-[#14281e] py-3 px-4 rounded-xl text-sm font-semibold tracking-wide transition-colors shadow-sm">
+          Yol Tarifi Al (Harita)
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 3. KURUMSAL PROJE ÇÖZÜMLERİ & ATÖLYE GÜCÜ (2 KOLONLU GÖRSEL VE BİLGİ DÜZENİ) -->
+<section class="container-x py-16 sm:py-20">
+  
+  <!-- Üst Kısım: Kurumsal Çözümler (Sol) & Unsplash Atölye / Mutfak Görseli (Sağ) -->
+  <div class="grid gap-10 lg:gap-14 lg:grid-cols-12 items-stretch mb-16 sm:mb-20">
+    
+    <!-- Sol Bilgilendirme ve Güvence Paneli -->
+    <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
+      <div>
+        <span class="text-xs uppercase tracking-[0.25em] font-semibold text-[#8f7849]">Kurumsal Proje Çözümleri</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-display text-[#14281e] tracking-tight">
+          İşletmenizin İhtiyacını Birlikte Belirleyelim
+        </h2>
+        <p class="mt-4 text-sm sm:text-base text-[#1c3527]/80 leading-relaxed font-sans">
+          İster tek bir mutfak için toptan tencere-tava tedariği, ister anahtar teslim otel &amp; restoran mutfak sac imalatı olsun; 30 yıllık atölye tecrübemizle en uygun maliyetli çözümü sunuyoruz.
+        </p>
+      </div>
+
+      <!-- Avantaj Maddeleri -->
+      <div class="space-y-3.5">
+        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/70 border border-[#1c3527]/8 backdrop-blur-sm shadow-sm hover:border-[#1c3527]/15 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-[#1c2d26] text-sand-400 flex items-center justify-center flex-shrink-0 font-display text-lg shadow-sm">01</div>
+          <div>
+            <h4 class="text-sm font-semibold text-[#14281e]">Doğrudan İmalatçı Fiyatı</h4>
+            <p class="text-xs text-[#1c3527]/75 mt-1 leading-relaxed">Aracı komisyonu olmadan kendi pres ve sıvama atölyemizden fabrika çıkış fiyatları.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/70 border border-[#1c3527]/8 backdrop-blur-sm shadow-sm hover:border-[#1c3527]/15 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-[#1c2d26] text-sand-400 flex items-center justify-center flex-shrink-0 font-display text-lg shadow-sm">02</div>
+          <div>
+            <h4 class="text-sm font-semibold text-[#14281e]">304 Kalite Sanayi Sertifikası</h4>
+            <p class="text-xs text-[#1c3527]/75 mt-1 leading-relaxed">Gıda tüzüğüne tam uyumlu, asit ve yüksek ısıya dayanıklı birinci sınıf paslanmaz sac.</p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/70 border border-[#1c3527]/8 backdrop-blur-sm shadow-sm hover:border-[#1c3527]/15 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-[#1c2d26] text-sand-400 flex items-center justify-center flex-shrink-0 font-display text-lg shadow-sm">03</div>
+          <div>
+            <h4 class="text-sm font-semibold text-[#14281e]">Kesintisiz Stok &amp; Sevkiyat</h4>
+            <p class="text-xs text-[#1c3527]/75 mt-1 leading-relaxed">İstanbul içi kendi araçlarımızla, Türkiye geneli anlaşmalı ambar ve kargo ile hızlı teslimat.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Instagram Takip Rozeti -->
+      <div class="p-4 sm:p-5 rounded-2xl bg-white/80 border border-[#1c3527]/10 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#fd1d1d] via-[#e1306c] to-[#405de6] text-white flex items-center justify-center shadow-sm">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-[#14281e]">Atölye ve İmalat Videoları</div>
+            <div class="text-[11px] text-[#1c3527]/70">@nurscraft2025 Instagram'da</div>
+          </div>
+        </div>
+        <a href="{{ site_instagram }}" target="_blank" rel="noopener"
+           class="text-xs font-semibold px-4 py-2 rounded-xl bg-[#14281e] text-white hover:bg-[#1e3c2e] transition-colors shadow-sm">
+          İncele
+        </a>
+      </div>
+    </div>
+
+    <!-- Sağ: Unsplash Görseli (Yazısız, Saf Görsel) -->
+    <div class="lg:col-span-6 relative">
+      <div class="relative h-full min-h-[460px] lg:min-h-[520px] rounded-3xl overflow-hidden shadow-2xl border border-[#1c3527]/10 group">
+        <img src="{% static 'images/ekometal-craft-pots.jpg' %}" 
+             alt="EKOMETAL Endüstriyel Mutfak Paslanmaz Tencere ve Sac İmalatı" 
+             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Alt Kısım: Tam Alanı Kaplayan Geniş Online Teklif Formu Kartı -->
+  <div class="w-full bg-white/95 backdrop-blur-2xl rounded-3xl p-8 sm:p-12 lg:p-14 border border-[#1c3527]/10 shadow-[0_30px_70px_-20px_rgba(20,40,30,0.08)]">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-8 border-b border-[#1c3527]/8">
+      <div>
+        <span class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#8f7849]">
+          <span class="h-2 w-2 rounded-full bg-[#25D366] animate-pulse"></span>
+          Online Hızlı Teklif Formu
+        </span>
+        <h3 class="mt-2 text-2xl sm:text-3xl lg:text-4xl font-display text-[#14281e] tracking-tight">Teklif Talebinizi İletin</h3>
+        <p class="mt-2 text-sm text-[#1c3527]/75 max-w-2xl">
+          Ürün grubu, ebat veya toptan adet bilgisini iletin; satış ekibimiz aynı gün içinde telefon veya WhatsApp üzerinden detaylı fiyat teklifiyle geri dönsün.
+        </p>
+      </div>
+      <div class="hidden md:flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-cream-50/80 border border-[#1c3527]/10 flex-shrink-0">
+        <span class="text-xl">⚡</span>
+        <div>
+          <div class="text-xs font-semibold text-[#14281e]">Hızlı Geri Dönüş</div>
+          <div class="text-[11px] text-[#1c3527]/70">Ortalama 30 dk içinde yanıt</div>
+        </div>
+      </div>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+      <div role="status" class="mb-8 rounded-2xl border border-[#25D366]/40 bg-[#25D366]/10 p-4 text-sm font-medium text-[#14281e] flex items-center gap-3">
+        <svg class="w-5 h-5 text-[#25D366] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        {{ message }}
+      </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Hızlı Kategori Seçim Rozetleri (İnteraktif) -->
+    <div class="mb-8">
+      <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-3">
+        Hızlı Ürün Grubu Seçimi (Tıklayarak forma otomatik ekleyin)
+      </label>
+      <div class="flex flex-wrap gap-2.5" id="quick-category-pills">
+        <button type="button" data-val="Endüstriyel Tencereler" class="category-pill text-xs font-medium px-4 py-2.5 rounded-xl bg-cream-50/90 border border-[#1c3527]/12 text-[#14281e] hover:bg-[#14281e] hover:text-white transition-all cursor-pointer shadow-sm">
+          🍲 Endüstriyel Tencereler
+        </button>
+        <button type="button" data-val="Sanayi Tavaları &amp; Sahanlar" class="category-pill text-xs font-medium px-4 py-2.5 rounded-xl bg-cream-50/90 border border-[#1c3527]/12 text-[#14281e] hover:bg-[#14281e] hover:text-white transition-all cursor-pointer shadow-sm">
+          🍳 Sanayi Tavaları &amp; Sahanlar
+        </button>
+        <button type="button" data-val="Gastronom Küvetler" class="category-pill text-xs font-medium px-4 py-2.5 rounded-xl bg-cream-50/90 border border-[#1c3527]/12 text-[#14281e] hover:bg-[#14281e] hover:text-white transition-all cursor-pointer shadow-sm">
+          🥣 Gastronom Küvetler
+        </button>
+        <button type="button" data-val="Özel Paslanmaz Sac İmalatı" class="category-pill text-xs font-medium px-4 py-2.5 rounded-xl bg-cream-50/90 border border-[#1c3527]/12 text-[#14281e] hover:bg-[#14281e] hover:text-white transition-all cursor-pointer shadow-sm">
+          ⚡ Özel Paslanmaz Sac İmalatı
+        </button>
+        <button type="button" data-val="Komple Restoran / Otel Proje Tedariki" class="category-pill text-xs font-medium px-4 py-2.5 rounded-xl bg-cream-50/90 border border-[#1c3527]/12 text-[#14281e] hover:bg-[#14281e] hover:text-white transition-all cursor-pointer shadow-sm">
+          🏢 Komple Proje Tedariki
+        </button>
+      </div>
+    </div>
+
+    <!-- Form Alanları (Genişletilmiş Grid) -->
+    <form method="post" id="inquiry-form" novalidate class="space-y-6">
+      {% csrf_token %}
+      {{ form.website }}
+      {% if form.non_field_errors %}<p class="text-sm text-red-700 bg-red-50 p-3 rounded-xl">{{ form.non_field_errors }}</p>{% endif %}
+
+      <!-- Üst Satır: 4 Kolonlu Hızlı Bilgiler -->
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <label for="{{ form.full_name.id_for_label }}" class="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#14281e]">Ad Soyad *</label>
+          {{ form.full_name }}
+          {% for e in form.full_name.errors %}<p class="mt-1 text-xs text-red-700">{{ e }}</p>{% endfor %}
+        </div>
+        <div>
+          <label for="{{ form.company_name.id_for_label }}" class="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#14281e]">İşletme / Restoran Adı *</label>
+          {{ form.company_name }}
+          {% for e in form.company_name.errors %}<p class="mt-1 text-xs text-red-700">{{ e }}</p>{% endfor %}
+        </div>
+        <div>
+          <label for="{{ form.phone.id_for_label }}" class="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#14281e]">Telefon Numarası *</label>
+          {{ form.phone }}
+          {% for e in form.phone.errors %}<p class="mt-1 text-xs text-red-700">{{ e }}</p>{% endfor %}
+        </div>
+        <div>
+          <label for="{{ form.product_interest.id_for_label }}" class="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#14281e]">İlgilenilen Ürün / Model</label>
+          {{ form.product_interest }}
+        </div>
+      </div>
+
+      <!-- Alt Satır: Mesaj Alanı -->
+      <div>
+        <label for="{{ form.message.id_for_label }}" class="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#14281e]">Talebiniz / Adet, Ölçü &amp; Proje Detayları</label>
+        {{ form.message }}
+      </div>
+
+      <!-- Gönder Butonu ve Güvenlik Bildirimi -->
+      <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <button type="submit" id="inquiry-submit"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#14281e] hover:bg-[#1e3c2e] text-cream-50 px-10 py-4 rounded-xl text-sm font-semibold tracking-wider uppercase shadow-xl transition-all duration-300 hover:scale-[1.01] active:scale-95 cursor-pointer">
+          <span>Teklif Talebini Gönder</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+        <div class="flex items-center gap-2 text-xs text-[#1c3527]/70">
+          <svg class="w-4 h-4 text-[#8f7849]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          <span>Bilgileriniz gizli tutulur, doğrudan fabrika satış departmanına iletilir.</span>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+</section>
+
+<!-- Kategori Butonları İçin Hızlı Doldurma Betiği -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const pills = document.querySelectorAll('.category-pill');
+    const inputInterest = document.getElementById('{{ form.product_interest.id_for_label }}');
+    if (pills && inputInterest) {
+      pills.forEach(pill => {
+        pill.addEventListener('click', function() {
+          const val = this.getAttribute('data-val');
+          inputInterest.value = val;
+          inputInterest.focus();
+          
+          pills.forEach(p => p.classList.remove('bg-[#14281e]', 'text-white'));
+          this.classList.add('bg-[#14281e]', 'text-white');
+        });
+      });
+    }
+  });
+</script>
+
+{% endblock %}

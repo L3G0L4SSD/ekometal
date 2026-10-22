@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full bg-[#f6f4ee]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yönetim Paneli | EKOMETAL Endüstriyel Mutfak</title>
+  <link rel="stylesheet" href="/static/css/output.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    .tab-active { background-color: #14281e; color: #fdfcf7; }
+    .tab-inactive { background-color: rgba(255,255,255,0.7); color: #1c3527; }
+  </style>
+</head>
+<body class="min-h-full flex flex-col bg-[#f6f4ee] text-[#14281e]">
+
+  <!-- Üst Menü & Uygulama Çubuğu -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#1c3527]/10 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Sol: Logo & Başlık -->
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-xl bg-[#14281e] flex items-center justify-center border border-[#c9ab6e]/30 shadow-md flex-shrink-0">
+          <img src="/static/images/ekometal-icon-gold.png" alt="EKOMETAL" class="w-7 h-7 object-contain">
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-cinzel font-bold text-lg text-[#14281e] tracking-wider">EKOMETAL</span>
+            <span class="px-2 py-0.5 rounded-md bg-[#8f7849]/15 text-[#8f7849] text-[10px] font-bold uppercase tracking-wider">Kokpit</span>
+          </div>
+          <p class="text-xs text-[#1c3527]/60 hidden sm:block">Kolay Ürün &amp; Teklif Yönetim Sistemi</p>
+        </div>
+      </div>
+
+      <!-- Orta: Sekmeler (Desktop) -->
+      <nav class="hidden md:flex items-center gap-2 bg-[#1c3527]/5 p-1.5 rounded-2xl border border-[#1c3527]/8">
+        <button type="button" onclick="switchTab('teklifler')" id="tab-btn-teklifler"
+                class="px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-2 tab-btn">
+          <span>💬 Gelen Teklifler</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] font-bold {% if total_inquiries > 0 %}bg-[#25D366] text-white{% else %}bg-black/10 text-black/60{% endif %}">
+            {{ total_inquiries }}
+          </span>
+        </button>
+        <button type="button" onclick="switchTab('urunler')" id="tab-btn-urunler"
+                class="px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-2 tab-btn">
+          <span>📦 Ürün Kataloğu</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#14281e]/10 text-[#14281e]">
+            {{ total_products }}
+          </span>
+        </button>
+        <button type="button" onclick="switchTab('kategoriler')" id="tab-btn-kategoriler"
+                class="px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 cursor-pointer flex items-center gap-2 tab-btn">
+          <span>📁 Kategoriler</span>
+          <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#14281e]/10 text-[#14281e]">
+            {{ total_categories }}
+          </span>
+        </button>
+      </nav>
+
+      <!-- Sağ: Siteyi Gör & Çıkış -->
+      <div class="flex items-center gap-3">
+        <a href="{% url 'core:home' %}" target="_blank"
+           class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#1c3527]/15 hover:bg-cream-100 text-xs font-semibold text-[#14281e] transition-colors shadow-sm">
+          <span>Siteyi Gör</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+
+        <a href="{% url 'core:admin_logout' %}"
+           class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span class="hidden sm:inline">Çıkış</span>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Mobil Sekme Çubuğu -->
+    <div class="md:hidden flex items-center justify-around border-t border-[#1c3527]/8 px-2 py-2 bg-cream-50/60 overflow-x-auto">
+      <button type="button" onclick="switchTab('teklifler')" id="tab-btn-mob-teklifler"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 mob-tab-btn">
+        <span>💬 Teklifler</span> ({{ total_inquiries }})
+      </button>
+      <button type="button" onclick="switchTab('urunler')" id="tab-btn-mob-urunler"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 mob-tab-btn">
+        <span>📦 Ürünler</span> ({{ total_products }})
+      </button>
+      <button type="button" onclick="switchTab('kategoriler')" id="tab-btn-mob-kategoriler"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 mob-tab-btn">
+        <span>📁 Kategoriler</span> ({{ total_categories }})
+      </button>
+    </div>
+  </header>
+
+  <!-- Ana İçerik Alanı -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Sistem Mesajları (Alert) -->
+    {% if messages %}
+    <div class="mb-6 space-y-3">
+      {% for message in messages %}
+      <div class="p-4 rounded-2xl flex items-center justify-between gap-3 text-sm font-medium shadow-sm {% if message.tags == 'error' %}bg-red-50 border border-red-200 text-red-800{% else %}bg-[#25D366]/15 border border-[#25D366]/30 text-[#0e4823]{% endif %}">
+        <div class="flex items-center gap-3">
+          {% if message.tags == 'error' %}
+            <svg class="w-5 h-5 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          {% else %}
+            <svg class="w-5 h-5 text-[#25D366] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          {% endif %}
+          <span>{{ message }}</span>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-current opacity-60 hover:opacity-100 p-1">✕</button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- 1. HIZLI ÖZET SAYAÇLARI -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+      
+      <div onclick="switchTab('teklifler')" class="p-5 sm:p-6 rounded-3xl bg-white border border-[#1c3527]/10 shadow-sm cursor-pointer hover:border-[#1c3527]/25 hover:shadow-md transition-all">
+        <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#1c3527]/60 mb-2">
+          <span>Toplam Teklif</span>
+          <span class="p-2 rounded-xl bg-[#25D366]/15 text-[#0e4823]">💬</span>
+        </div>
+        <div class="text-3xl sm:text-4xl font-display text-[#14281e]">{{ total_inquiries }}</div>
+        <div class="mt-2 text-xs text-[#1c3527]/70 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#25D366] inline-block"></span>
+          <span>Bugün: <strong>{{ today_inquiries }} yeni</strong></span>
+        </div>
+      </div>
+
+      <div onclick="switchTab('urunler')" class="p-5 sm:p-6 rounded-3xl bg-white border border-[#1c3527]/10 shadow-sm cursor-pointer hover:border-[#1c3527]/25 hover:shadow-md transition-all">
+        <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#1c3527]/60 mb-2">
+          <span>Aktif Ürünler</span>
+          <span class="p-2 rounded-xl bg-[#8f7849]/15 text-[#8f7849]">📦</span>
+        </div>
+        <div class="text-3xl sm:text-4xl font-display text-[#14281e]">{{ total_products }}</div>
+        <div class="mt-2 text-xs text-[#1c3527]/70">Katalogda sergilenen</div>
+      </div>
+
+      <div onclick="switchTab('kategoriler')" class="p-5 sm:p-6 rounded-3xl bg-white border border-[#1c3527]/10 shadow-sm cursor-pointer hover:border-[#1c3527]/25 hover:shadow-md transition-all">
+        <div class="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-[#1c3527]/60 mb-2">
+          <span>Kategoriler</span>
+          <span class="p-2 rounded-xl bg-[#14281e]/10 text-[#14281e]">📁</span>
+        </div>
+        <div class="text-3xl sm:text-4xl font-display text-[#14281e]">{{ total_categories }}</div>
+        <div class="mt-2 text-xs text-[#1c3527]/70">Ana ürün grupları</div>
+      </div>
+
+      <div onclick="openProductModal()" class="p-5 sm:p-6 rounded-3xl bg-[#14281e] text-white border border-[#14281e] shadow-lg cursor-pointer hover:bg-[#1e3c2e] transition-all flex flex-col justify-between">
+        <div>
+          <div class="text-xs uppercase tracking-wider text-[#c9ab6e] font-semibold mb-1">Hızlı İşlem</div>
+          <div class="text-xl font-display">Yeni Ürün Ekle</div>
+        </div>
+        <div class="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-[#c9ab6e]">
+          <span>Formu Aç</span>
+          <span>→</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: GELEN TEKLİF TALEPLERİ (CRM)                       -->
+    <!-- ========================================================= -->
+    <section id="tab-content-teklifler" class="tab-content">
+      
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#1c3527]/10 shadow-sm">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#1c3527]/8">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-display text-[#14281e]">Gelen Teklif Talepleri (CRM)</h2>
+            <p class="text-xs sm:text-sm text-[#1c3527]/70 mt-1">Web sitesindeki Online Teklif Formunu dolduran müşteriler burada listelenir.</p>
+          </div>
+          <!-- Arama -->
+          <form method="get" class="flex gap-2">
+            <input type="hidden" name="tab" value="teklifler">
+            <input type="text" name="q" value="{% if active_tab == 'teklifler' %}{{ q }}{% endif %}" placeholder="Müşteri adı veya tel ara..."
+                   class="rounded-xl border border-[#1c3527]/20 px-3.5 py-2 text-xs text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15">
+            <button type="submit" class="px-4 py-2 rounded-xl bg-[#14281e] text-white text-xs font-semibold">Ara</button>
+          </form>
+        </div>
+
+        {% if inquiries %}
+        <div class="space-y-4">
+          {% for inq in inquiries %}
+          <div class="p-5 sm:p-6 rounded-2xl border border-[#1c3527]/12 bg-[#faf9f5] hover:border-[#1c3527]/25 transition-all">
+            
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
+              
+              <!-- Müşteri ve Şirket -->
+              <div>
+                <div class="flex items-center gap-3">
+                  <h3 class="text-base sm:text-lg font-bold text-[#14281e]">{{ inq.full_name }}</h3>
+                  <span class="px-2.5 py-0.5 rounded-full bg-[#1c3527]/10 text-[#14281e] text-xs font-semibold">
+                    {{ inq.company_name }}
+                  </span>
+                </div>
+                <div class="mt-1 text-xs text-[#1c3527]/70 flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <span>📞 <strong>{{ inq.phone }}</strong></span>
+                  <span>🗓️ {{ inq.created_at|date:"d F Y, H:i" }}</span>
+                  {% if inq.product_interest %}
+                  <span>🏷️ İlgilenilen Ürün: <strong class="text-[#8f7849]">{{ inq.product_interest }}</strong></span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Hızlı İletişim Butonları -->
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <!-- WhatsApp Butonu (Önceden doldurulmuş hazır mesajla tek tık) -->
+                <a href="https://wa.me/90{{ inq.phone|cut:' '|cut:'-'|cut:'('|cut:')'|cut:'+90'|cut:'05' }}?text=Merhaba%20Say%C4%B1n%20{{ inq.full_name|urlencode }}%2C%20EKOMETAL%20End%C3%BCstriyel%20Mutfak%20%C3%BCzerinden%20iletti%C4%9Finiz%20teklif%20talebiniz%20ile%20ilgili%20size%20d%C3%B6n%C3%BC%C5%9F%20yap%C4%B1yorum."
+                   target="_blank" rel="noopener"
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold transition-all shadow-sm">
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                  <span>WhatsApp'tan Yaz</span>
+                </a>
+
+                <!-- Arama Butonu -->
+                <a href="tel:{{ inq.phone }}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white border border-[#1c3527]/20 hover:bg-cream-100 text-xs font-semibold text-[#14281e] transition-colors shadow-sm">
+                  <span>📞 Ara</span>
+                </a>
+
+                <!-- Sil Butonu -->
+                <form method="post" action="{% url 'core:admin_inquiry_delete' inq.pk %}" onsubmit="return confirm('Bu teklif talebini silmek istediğinize emin misiniz?');">
+                  {% csrf_token %}
+                  <button type="submit" class="p-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors" title="Talebi Sil">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
+                </form>
+              </div>
+
+            </div>
+
+            <!-- Mesaj İçeriği -->
+            {% if inq.message %}
+            <div class="mt-3 p-3.5 rounded-xl bg-white border border-[#1c3527]/8 text-xs sm:text-sm text-[#14281e] leading-relaxed">
+              <strong>Müşteri Notu:</strong> {{ inq.message }}
+            </div>
+            {% endif %}
+
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12 text-[#1c3527]/60">
+          <span class="text-4xl block mb-2">📭</span>
+          Henüz kayıtlı teklif talebi bulunmuyor.
+        </div>
+        {% endif %}
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: ÜRÜNLER & KATALOG YÖNETİMİ                         -->
+    <!-- ========================================================= -->
+    <section id="tab-content-urunler" class="tab-content hidden">
+      
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#1c3527]/10 shadow-sm">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#1c3527]/8">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-display text-[#14281e]">Ürün Kataloğu Yönetimi</h2>
+            <p class="text-xs sm:text-sm text-[#1c3527]/70 mt-1">Sitede sergilenen ürünleri ekleyin, fotoğraflarını güncelleyin ve düzenleyin.</p>
+          </div>
+          
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Arama & Filtre -->
+            <form method="get" class="flex items-center gap-2">
+              <input type="hidden" name="tab" value="urunler">
+              <input type="text" name="q" value="{% if active_tab == 'urunler' %}{{ q }}{% endif %}" placeholder="Model veya ad ara..."
+                     class="rounded-xl border border-[#1c3527]/20 px-3.5 py-2 text-xs text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15">
+              <button type="submit" class="px-3.5 py-2 rounded-xl bg-[#14281e] text-white text-xs font-semibold">Ara</button>
+            </form>
+
+            <!-- Yeni Ürün Butonu -->
+            <button type="button" onclick="openProductModal()"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#14281e] hover:bg-[#1e3c2e] text-white text-xs font-bold uppercase tracking-wider shadow-md transition-all cursor-pointer">
+              <span>+ Yeni Ürün Ekle</span>
+            </button>
+          </div>
+        </div>
+
+        {% if products %}
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {% for p in products %}
+          <div class="p-4 rounded-2xl border border-[#1c3527]/12 bg-[#faf9f5] flex flex-col justify-between hover:shadow-md transition-all">
+            <div>
+              <!-- Görsel ve Etiketler -->
+              <div class="relative aspect-video rounded-xl overflow-hidden bg-white border border-[#1c3527]/8 mb-3 flex items-center justify-center p-2">
+                {% if p.image %}
+                  <img src="{{ p.image.url }}" alt="{{ p.name }}" class="h-full w-full object-contain">
+                {% else %}
+                  <span class="text-3xl text-sand-500/40">🍲</span>
+                {% endif %}
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#14281e] text-white text-[10px] font-bold tracking-wider">
+                  {{ p.model_code }}
+                </span>
+                {% if p.is_featured %}
+                <span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-[#c9ab6e] text-white text-[10px] font-bold">
+                  ★ Öne Çıkan
+                </span>
+                {% endif %}
+              </div>
+
+              <!-- İsim & Kategori -->
+              <div class="text-[11px] uppercase tracking-wider text-[#8f7849] font-bold">{{ p.category.name }}</div>
+              <h3 class="text-sm font-bold text-[#14281e] mt-0.5 line-clamp-1">{{ p.name }}</h3>
+              
+              <!-- Galeri Bilgisi -->
+              <div class="mt-2 text-xs text-[#1c3527]/60 flex items-center gap-2">
+                <span>📸 <strong>{{ p.gallery_images|length }}</strong> Fotoğraf</span>
+                <span>•</span>
+                <span>📋 <strong>{{ p.spec_rows|length }}</strong> Teknik Ölçü</span>
+              </div>
+            </div>
+
+            <!-- İşlem Butonları -->
+            <div class="mt-4 pt-3 border-t border-[#1c3527]/8 flex items-center justify-between gap-2">
+              <a href="{% url 'core:product_detail' p.pk %}" target="_blank"
+                 class="text-xs text-[#1c3527]/70 hover:text-[#14281e] font-medium" title="Sitede Görüntüle">
+                Sitede Gör ↗
+              </a>
+              <div class="flex items-center gap-2">
+                <button type="button" 
+                        onclick="editProduct('{{ p.pk }}', '{{ p.name|escapejs }}', '{{ p.model_code|escapejs }}', '{{ p.category.pk }}', '{{ p.specs|escapejs }}', '{{ p.wholesale_info|escapejs }}', {{ p.is_featured|lower }})"
+                        class="px-3 py-1.5 rounded-lg bg-white border border-[#1c3527]/20 hover:bg-[#14281e] hover:text-white text-xs font-semibold transition-colors">
+                  Düzenle
+                </button>
+                <form method="post" action="{% url 'core:admin_product_delete' p.pk %}" onsubmit="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                  {% csrf_token %}
+                  <button type="submit" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Sil">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12 text-[#1c3527]/60">
+          <span class="text-4xl block mb-2">📦</span>
+          Henüz ürün eklenmemiş. "+ Yeni Ürün Ekle" butonuna basarak ilk ürününüzü ekleyebilirsiniz.
+        </div>
+        {% endif %}
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: KATEGORİ YÖNETİMİ                                  -->
+    <!-- ========================================================= -->
+    <section id="tab-content-kategoriler" class="tab-content hidden">
+      
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#1c3527]/10 shadow-sm">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-[#1c3527]/8">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-display text-[#14281e]">Ürün Kategorileri</h2>
+            <p class="text-xs sm:text-sm text-[#1c3527]/70 mt-1">Ana sayfadaki ve menüdeki kategorileri düzenleyin veya yenisini açın.</p>
+          </div>
+          
+          <button type="button" onclick="openCategoryModal()"
+                  class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#14281e] hover:bg-[#1e3c2e] text-white text-xs font-bold uppercase tracking-wider shadow-md transition-all cursor-pointer">
+            <span>+ Yeni Kategori Ekle</span>
+          </button>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {% for cat in categories %}
+          <div class="p-5 rounded-2xl border border-[#1c3527]/12 bg-[#faf9f5] flex flex-col justify-between hover:shadow-md transition-all">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <span class="w-8 h-8 rounded-lg bg-[#14281e]/10 flex items-center justify-center font-bold text-xs text-[#14281e]">
+                  #{{ cat.order }}
+                </span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#8f7849]/15 text-[#8f7849]">
+                  {{ cat.product_count }} Ürün
+                </span>
+              </div>
+              <h3 class="text-base font-bold text-[#14281e]">{{ cat.name }}</h3>
+              <p class="text-xs text-[#1c3527]/60 mt-1">Slug: /kategori/{{ cat.slug }}/</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-[#1c3527]/8 flex items-center justify-between">
+              <button type="button" onclick="editCategory('{{ cat.pk }}', '{{ cat.name|escapejs }}', '{{ cat.order }}')"
+                      class="text-xs font-semibold text-[#14281e] hover:underline">
+                Düzenle
+              </button>
+              <form method="post" action="{% url 'core:admin_category_delete' cat.pk %}" onsubmit="return confirm('Bu kategoriyi silmek istediğinize emin misiniz? (İçinde ürün varsa silinemez)');">
+                {% csrf_token %}
+                <button type="submit" class="text-xs text-red-600 hover:text-red-800 font-semibold">Sil</button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: YENİ ÜRÜN EKLE / DÜZENLE                           -->
+  <!-- ========================================================= -->
+  <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-xl sm:max-w-2xl w-full max-h-[90vh] flex flex-col border border-[#1c3527]/15 shadow-2xl relative overflow-hidden">
+      
+      <!-- Modal Başlık (Sabit) -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-[#1c3527]/10 flex-shrink-0 bg-white">
+        <div>
+          <h3 id="product-modal-title" class="text-base sm:text-lg font-bold text-[#14281e]">Yeni Ürün Ekle</h3>
+          <p class="text-[11px] sm:text-xs text-[#1c3527]/60 mt-0.5">Ürün temel bilgileri, teknik özellikleri ve görsellerini giriniz.</p>
+        </div>
+        <button type="button" onclick="closeProductModal()" class="text-[#1c3527]/50 hover:text-[#14281e] text-lg w-8 h-8 rounded-lg flex items-center justify-center hover:bg-cream-100 transition-colors">✕</button>
+      </div>
+
+      <!-- Form (Kaydırılabilir Gövde) -->
+      <form method="post" action="{% url 'core:admin_product_save' %}" enctype="multipart/form-data" class="flex flex-col flex-1 overflow-hidden">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" id="modal-product-id" value="">
+
+        <div class="p-5 sm:p-6 overflow-y-auto space-y-3.5 flex-1">
+
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1">Model Kodu *</label>
+              <input type="text" name="model_code" id="modal-model-code" required placeholder="Örn: EKO-PZ40"
+                     class="w-full rounded-xl border border-[#1c3527]/20 px-3 py-2 text-xs uppercase text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1">Kategori *</label>
+              <select name="category_id" id="modal-category-id" required
+                      class="w-full rounded-xl border border-[#1c3527]/20 px-3 py-2 text-xs text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15">
+                <option value="">Kategori Seçin</option>
+                {% for c in categories %}
+                  <option value="{{ c.pk }}">{{ c.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1">Ürün Adı *</label>
+            <input type="text" name="name" id="modal-product-name" required placeholder="Örn: Delikli Pizza Tavası Alüminyum"
+                   class="w-full rounded-xl border border-[#1c3527]/20 px-3 py-2 text-xs text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15">
+          </div>
+
+          <!-- Ürün Görselleri: 5 Kompakt Yatay Slot -->
+          <div class="rounded-xl border border-[#1c3527]/15 p-3 bg-[#faf9f5]">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-[#14281e]">Ürün Fotoğrafları</label>
+              <span class="text-[10px] text-[#1c3527]/60">1 Ana + 4 Ek Görsel</span>
+            </div>
+            <p class="text-[11px] text-[#1c3527]/70 mb-2">Fotoğraf seçmek için ilgili kutuya tıklayınız:</p>
+
+            <div style="display: flex; gap: 8px; width: 100%;">
+              
+              <!-- Slot 0: Ana Kapak -->
+              <div style="flex: 1; min-width: 0;">
+                <span class="block text-[10px] font-bold text-[#14281e] mb-1 text-center truncate">Ana Görsel *</span>
+                <label style="height: 74px; width: 100%; border: 1.5px dashed rgba(20,40,30,0.5); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; background: #fff; overflow: hidden;" class="hover:bg-cream-50 transition-colors shadow-sm">
+                  <input type="file" name="image" id="input-slot-cover" accept="image/*" class="sr-only" onchange="handleSlotPreview(this, 'preview-img-cover', 'icon-slot-cover')">
+                  <div id="icon-slot-cover" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 2px;">
+                    <span style="font-size: 14px; line-height: 1; color: #14281e; font-weight: bold;">★</span>
+                    <span style="font-size: 9px; font-weight: 600; color: #14281e; margin-top: 3px;">Kapak</span>
+                  </div>
+                  <img id="preview-img-cover" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; padding: 2px;" alt="Ana Görsel">
+                </label>
+              </div>
+
+              <!-- Slot 1 -->
+              <div style="flex: 1; min-width: 0;">
+                <span class="block text-[10px] font-medium text-[#1c3527]/70 mb-1 text-center truncate">Ek Görsel 1</span>
+                <label style="height: 74px; width: 100%; border: 1px dashed rgba(20,40,30,0.25); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; background: #fff; overflow: hidden;" class="hover:bg-cream-50 transition-colors shadow-sm">
+                  <input type="file" name="gallery_image_1" id="input-slot-1" accept="image/*" class="sr-only" onchange="handleSlotPreview(this, 'preview-img-1', 'icon-slot-1')">
+                  <div id="icon-slot-1" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 2px;">
+                    <span style="font-size: 15px; line-height: 1; color: rgba(20,40,30,0.4); font-weight: bold;">+</span>
+                    <span style="font-size: 9px; color: rgba(20,40,30,0.6); margin-top: 3px;">Detay</span>
+                  </div>
+                  <img id="preview-img-1" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; padding: 2px;" alt="Ek 1">
+                </label>
+              </div>
+
+              <!-- Slot 2 -->
+              <div style="flex: 1; min-width: 0;">
+                <span class="block text-[10px] font-medium text-[#1c3527]/70 mb-1 text-center truncate">Ek Görsel 2</span>
+                <label style="height: 74px; width: 100%; border: 1px dashed rgba(20,40,30,0.25); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; background: #fff; overflow: hidden;" class="hover:bg-cream-50 transition-colors shadow-sm">
+                  <input type="file" name="gallery_image_2" id="input-slot-2" accept="image/*" class="sr-only" onchange="handleSlotPreview(this, 'preview-img-2', 'icon-slot-2')">
+                  <div id="icon-slot-2" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 2px;">
+                    <span style="font-size: 15px; line-height: 1; color: rgba(20,40,30,0.4); font-weight: bold;">+</span>
+                    <span style="font-size: 9px; color: rgba(20,40,30,0.6); margin-top: 3px;">Yan Açı</span>
+                  </div>
+                  <img id="preview-img-2" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; padding: 2px;" alt="Ek 2">
+                </label>
+              </div>
+
+              <!-- Slot 3 -->
+              <div style="flex: 1; min-width: 0;">
+                <span class="block text-[10px] font-medium text-[#1c3527]/70 mb-1 text-center truncate">Ek Görsel 3</span>
+                <label style="height: 74px; width: 100%; border: 1px dashed rgba(20,40,30,0.25); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; background: #fff; overflow: hidden;" class="hover:bg-cream-50 transition-colors shadow-sm">
+                  <input type="file" name="gallery_image_3" id="input-slot-3" accept="image/*" class="sr-only" onchange="handleSlotPreview(this, 'preview-img-3', 'icon-slot-3')">
+                  <div id="icon-slot-3" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 2px;">
+                    <span style="font-size: 15px; line-height: 1; color: rgba(20,40,30,0.4); font-weight: bold;">+</span>
+                    <span style="font-size: 9px; color: rgba(20,40,30,0.6); margin-top: 3px;">Ölçü</span>
+                  </div>
+                  <img id="preview-img-3" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; padding: 2px;" alt="Ek 3">
+                </label>
+              </div>
+
+              <!-- Slot 4 -->
+              <div style="flex: 1; min-width: 0;">
+                <span class="block text-[10px] font-medium text-[#1c3527]/70 mb-1 text-center truncate">Ek Görsel 4</span>
+                <label style="height: 74px; width: 100%; border: 1px dashed rgba(20,40,30,0.25); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; background: #fff; overflow: hidden;" class="hover:bg-cream-50 transition-colors shadow-sm">
+                  <input type="file" name="gallery_image_4" id="input-slot-4" accept="image/*" class="sr-only" onchange="handleSlotPreview(this, 'preview-img-4', 'icon-slot-4')">
+                  <div id="icon-slot-4" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 2px;">
+                    <span style="font-size: 15px; line-height: 1; color: rgba(20,40,30,0.4); font-weight: bold;">+</span>
+                    <span style="font-size: 9px; color: rgba(20,40,30,0.6); margin-top: 3px;">Varyant</span>
+                  </div>
+                  <img id="preview-img-4" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: none; background: #fff; padding: 2px;" alt="Ek 4">
+                </label>
+              </div>
+
+            </div>
+
+            <div class="mt-2 pt-2 border-t border-[#1c3527]/10 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-[#1c3527]/60">
+              <span>İsteğe bağlı toplu seçim:</span>
+              <input type="file" name="gallery_images" multiple accept="image/*" class="text-[10px] text-[#1c3527] file:mr-2 file:py-0.5 file:px-2 file:rounded file:border-0 file:text-[10px] file:bg-[#14281e]/10 file:text-[#14281e] cursor-pointer">
+            </div>
+
+          </div>
+
+          <!-- Teknik Ölçüler -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1">
+              Teknik Özellikler &amp; Ölçüler (Her satıra bir özellik)
+            </label>
+            <textarea name="specs" id="modal-specs" rows="3" placeholder="Çap: 40 cm&#10;Yükseklik: 30 cm&#10;Sac Kalınlığı: 1.5 mm"
+                      class="w-full rounded-xl border border-[#1c3527]/20 px-3 py-2 text-xs text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15 font-mono"></textarea>
+          </div>
+
+          <!-- Toptan İskonto Notu -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1">
+              Toptan &amp; Proje İskonto Bilgisi
+            </label>
+            <textarea name="wholesale_info" id="modal-wholesale" rows="2" placeholder="Koli bazlı toptan alımlarda özel iskonto uygulanır."
+                      class="w-full rounded-xl border border-[#1c3527]/20 px-3 py-2 text-xs text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15"></textarea>
+          </div>
+
+          <!-- Öne Çıkar -->
+          <div class="flex items-center gap-2">
+            <input type="checkbox" name="is_featured" id="modal-featured" class="w-4 h-4 rounded text-[#14281e] focus:ring-[#14281e]">
+            <label for="modal-featured" class="text-xs font-semibold text-[#14281e] cursor-pointer">Ana Sayfada "Öne Çıkan Ürünler" vitrininde göster</label>
+          </div>
+
+        </div>
+
+        <!-- Modal Alt Çubuk (Sabit) -->
+        <div class="px-6 py-3 border-t border-[#1c3527]/10 flex items-center justify-end gap-3 flex-shrink-0 bg-[#faf9f5]">
+          <button type="button" onclick="closeProductModal()" class="px-4 py-2 rounded-xl border border-[#1c3527]/20 text-xs font-semibold text-[#14281e] hover:bg-cream-100">Vazgeç</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#14281e] hover:bg-[#1e3c2e] text-white text-xs font-bold uppercase tracking-wider shadow-md">Kaydet ve Yayınla</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+  <!-- ========================================================= -->
+  <!-- MODAL: KATEGORİ EKLE / DÜZENLE                            -->
+  <!-- ========================================================= -->
+  <div id="category-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-[#1c3527]/10 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-[#1c3527]/10 mb-6">
+        <h3 id="category-modal-title" class="text-lg font-display text-[#14281e]">Yeni Kategori Ekle</h3>
+        <button type="button" onclick="closeCategoryModal()" class="text-[#1c3527]/50 hover:text-[#14281e] text-xl p-1">✕</button>
+      </div>
+
+      <form method="post" action="{% url 'core:admin_category_save' %}" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+        <input type="hidden" name="category_id" id="modal-cat-id" value="">
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1.5">Kategori Adı *</label>
+          <input type="text" name="name" id="modal-cat-name" required placeholder="Örn: Sanayi Tencereleri"
+                 class="w-full rounded-xl border border-[#1c3527]/20 px-3.5 py-2.5 text-sm text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1.5">Sıralama No</label>
+          <input type="number" name="order" id="modal-cat-order" value="0"
+                 class="w-full rounded-xl border border-[#1c3527]/20 px-3.5 py-2.5 text-sm text-[#14281e] focus:outline-none focus:ring-2 focus:ring-[#14281e]/15">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-[#14281e] mb-1.5">Kategori Görseli</label>
+          <input type="file" name="image" accept="image/*" class="w-full text-xs text-[#1c3527] file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#14281e] file:text-white cursor-pointer">
+        </div>
+
+        <div class="pt-4 border-t border-[#1c3527]/10 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 rounded-xl border border-[#1c3527]/20 text-xs font-semibold">Vazgeç</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-[#14281e] text-white text-xs font-bold uppercase tracking-wider">Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Javascript Kokpit Etkileşimi -->
+  <script>
+    // Sekme Değiştirme
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeEl = document.getElementById('tab-content-' + tabName);
+      if (activeEl) activeEl.classList.remove('hidden');
+
+      // Buton renkleri
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('tab-inactive');
+      });
+      const currentBtn = document.getElementById('tab-btn-' + tabName);
+      if (currentBtn) {
+        currentBtn.classList.remove('tab-inactive');
+        currentBtn.classList.add('tab-active');
+      }
+
+      // Mobil Buton renkleri
+      document.querySelectorAll('.mob-tab-btn').forEach(btn => {
+        btn.classList.remove('bg-[#14281e]', 'text-white');
+      });
+      const currentMobBtn = document.getElementById('tab-btn-mob-' + tabName);
+      if (currentMobBtn) {
+        currentMobBtn.classList.add('bg-[#14281e]', 'text-white');
+      }
+    }
+
+    // Görsel Önizleme Fonksiyonu
+    function handleSlotPreview(input, imgId, iconId) {
+      const img = document.getElementById(imgId);
+      const icon = document.getElementById(iconId);
+      if (!img) return;
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          img.src = e.target.result;
+          img.style.display = 'block';
+          if (icon) icon.style.display = 'none';
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+        if (icon) icon.style.display = 'flex';
+      }
+    }
+
+    function resetImagePreviews() {
+      ['cover', '1', '2', '3', '4'].forEach(key => {
+        const img = document.getElementById('preview-img-' + key);
+        const icon = document.getElementById('icon-slot-' + key);
+        const inp = document.getElementById('input-slot-' + key);
+        if (img) { img.src = ''; img.style.display = 'none'; }
+        if (icon) { icon.style.display = 'flex'; }
+        if (inp) { inp.value = ''; }
+      });
+    }
+
+    // Modal Fonksiyonları
+    function openProductModal() {
+      document.getElementById('modal-product-id').value = '';
+      document.getElementById('modal-product-name').value = '';
+      document.getElementById('modal-model-code').value = '';
+      document.getElementById('modal-category-id').value = '';
+      document.getElementById('modal-specs').value = '';
+      document.getElementById('modal-wholesale').value = '';
+      document.getElementById('modal-featured').checked = false;
+      document.getElementById('product-modal-title').textContent = 'Yeni Ürün Ekle';
+      resetImagePreviews();
+      
+      const modal = document.getElementById('product-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function editProduct(id, name, modelCode, catId, specs, wholesale, isFeatured) {
+      document.getElementById('modal-product-id').value = id;
+      document.getElementById('modal-product-name').value = name;
+      document.getElementById('modal-model-code').value = modelCode;
+      document.getElementById('modal-category-id').value = catId;
+      document.getElementById('modal-specs').value = specs;
+      document.getElementById('modal-wholesale').value = wholesale;
+      document.getElementById('modal-featured').checked = Boolean(isFeatured);
+      document.getElementById('product-modal-title').textContent = 'Ürünü Düzenle: ' + modelCode;
+      
+      const modal = document.getElementById('product-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeProductModal() {
+      const modal = document.getElementById('product-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    function openCategoryModal() {
+      document.getElementById('modal-cat-id').value = '';
+      document.getElementById('modal-cat-name').value = '';
+      document.getElementById('modal-cat-order').value = '0';
+      document.getElementById('category-modal-title').textContent = 'Yeni Kategori Ekle';
+
+      const modal = document.getElementById('category-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function editCategory(id, name, order) {
+      document.getElementById('modal-cat-id').value = id;
+      document.getElementById('modal-cat-name').value = name;
+      document.getElementById('modal-cat-order').value = order;
+      document.getElementById('category-modal-title').textContent = 'Kategoriyi Düzenle';
+
+      const modal = document.getElementById('category-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCategoryModal() {
+      const modal = document.getElementById('category-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    // İlk Yüklemede Aktif Sekmeyi Başlat
+    document.addEventListener('DOMContentLoaded', function() {
+      const initialTab = "{{ active_tab }}" || "teklifler";
+      switchTab(initialTab);
+    });
+  </script>
+
+</body>
+</html>
