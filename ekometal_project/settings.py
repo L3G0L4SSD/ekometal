@@ -143,6 +143,8 @@ STORAGES = {
     },
 }
 
+WHITENOISE_USE_FINDERS = True
+
 # Media files (kullanıcı/admin tarafından yüklenen görseller)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
